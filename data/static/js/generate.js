@@ -13,13 +13,18 @@ class BaseSection {
      */
     static buildTitle(section) {
         let title = document.createElement('h3');
-        title.innerHTML = section.tbl_cap;
+
+        title.style.color = 'violet'; // my str
+
+        title.innerHTML = section.tbl_cap; 
         title.id = section.sect_id;
         return title;
     }
 
     init() {
         let div = document.createElement('div');
+
+        div.style.backgroundColor = '#DCDCDC'; // my str
 
         if (this.section.sect_id) {
             div.setAttribute('id', this.section.sect_id);
@@ -46,6 +51,7 @@ class BaseSection {
 
                 /** Creating blocks from header and data in JSON one by one */
                 let newBlock = structuredClone(this.section);
+
                 newBlock.header = this.section.header[i];
 
                 if (newBlock.header.source) {
@@ -250,6 +256,7 @@ class BaseTable extends BaseSection {
 
         /** Copy query id into clipboard button */
         let button = Previewer.drawCopyButton();
+
         button.addEventListener("click", event => {
             navigator.clipboard.writeText(newRow.dataset.queryid).then(r => console.log(newRow.dataset.queryid))
         });
