@@ -6,30 +6,30 @@ class Previewer {
         return document.querySelectorAll("table.preview tr:not(.header)");
     }
 
-    static preprocessQueryString(queryString) {
-        let etc = '';
-        queryString = queryString.split(',').join(', ');
-        queryString = queryString.split('+').join(' + ');
-        queryString = queryString.split('/').join(' / ');
-
-        /** Max length = 1000 chars */
-        if (queryString.length > 1000) {
-            queryString = queryString.substring(0, 1000);
-            etc = ' ...'
-        }
-
-        return `${queryString}${etc}`
-    }
-
     static queryTextPreviewer(queryCell, queryRow, newRow, queryString) {
         queryCell.style.width = `${Math.floor(newRow.offsetWidth * 0.95)}px`;
         queryCell.style.fontFamily = 'Monospace';
         queryRow.style.display = '';
 
         /** Query text preview */
-        if (queryCell.firstChild && queryCell.firstChild.tagName.toLowerCase() !== 'p') {
-            let preprocessedText = Previewer.preprocessQueryString(queryString);
+        if (!queryCell.hasChildNodes()) {
+            let preprocessedText = Utilities.preprocessQueryString(queryString, 1000);
             queryCell.insertAdjacentHTML('afterbegin', `<p><i>${preprocessedText}</i></p>`);
+        }
+    }
+
+    static storageParamsPreviewer(previewCell, previewRow, newRow, previewData) {
+        previewCell.style.width = `${Math.floor(newRow.offsetWidth * 0.95)}px`;
+        previewCell.style.fontFamily = 'Monospace';
+        previewRow.style.display = '';
+
+        /** Query text preview */
+        if (!previewCell.hasChildNodes()) {
+            let topn = data.properties.topn || 20;
+            previewData.slice(-topn).reverse().forEach(item => {
+                let preprocessedText = Utilities.preprocessQueryString(`${item['first_seen']}: ${item['reloptions']}`, 1000);
+                previewCell.insertAdjacentHTML('afterbegin', `<p><i>${preprocessedText}</i></p>`);
+            })
         }
     }
 
@@ -71,46 +71,68 @@ class Previewer {
         PARENT_ROWS.forEach(parentRow => {
 
             /** Determine row and cell with query text */
-            let queryCell = document.createElement("td");
-            queryCell.setAttribute("colspan", "100");
-            let queryRow = document.createElement("tr");
-            queryRow.classList.add("queryRow");
+            let previewCell = document.createElement("td");
+            previewCell.setAttribute("colspan", "100");
+            let previewRow = document.createElement("tr");
+            previewRow.classList.add("previewRow");
 
             let preview = JSON.parse(parentRow.closest('table').dataset["preview"])[0]
-            queryRow.setAttribute("data-dataset_name", preview.dataset);
-            queryRow.setAttribute("data-dataset_col_id", preview.id);
-            queryRow.setAttribute("data-dataset_id", parentRow.dataset[preview.id]);
-            queryRow.style.display = "none";
-            queryRow.appendChild(queryCell);
+            let sourceDatasetName = preview.dataset;
+            let sourceDatasetKey = preview.id;
+
+            previewRow.setAttribute("data-dataset_name", sourceDatasetName);
+            previewRow.setAttribute("data-dataset_col_id", sourceDatasetKey);
+            previewRow.setAttribute("data-dataset_id", parentRow.dataset[sourceDatasetKey]);
+            previewRow.style.display = "none";
+            previewRow.appendChild(previewCell);
 
             if (!parentRow.classList.contains("int1")) {
-                parentRow.insertAdjacentElement("afterend", queryRow);
+                parentRow.insertAdjacentElement("afterend", previewRow);
             }
-
-            /** Copy query text into clipboard button */
-            let copyQueryTextButton = Previewer.drawCopyButton();
-            copyQueryTextButton.setAttribute("class", "copyQueryTextButton");
-            queryCell.appendChild(copyQueryTextButton);
 
             parentRow.addEventListener("click", event => {
                 if (parentRow.classList.contains('int1')) {
-                    queryRow = parentRow.nextSibling.nextSibling;
-                    queryCell = queryRow.firstChild;
+                    previewRow = parentRow.nextSibling.nextSibling;
+                    previewCell = previewRow.firstChild;
                 }
 
                 /** Trigger event only if user clicked not on rect and link*/
                 if (event.target.tagName.toLowerCase() !== 'a' && event.target.tagName.toLowerCase() !== 'rect') {
-                    if (queryRow.style.display === 'none') {
-                        let queryIndex = Previewer.findQuery(queryRow);
-                        if (queryIndex >= 0) {
-                            let queryText = data.datasets[preview.dataset][queryIndex].query_texts[0];
-                            Previewer.queryTextPreviewer(queryCell, queryRow, parentRow, queryText);
-                            copyQueryTextButton.addEventListener("click", event => {
-                                navigator.clipboard.writeText(queryText).then(r => console.log(queryText));
-                            });
+                    if (previewRow.style.display === 'none') {
+                        
+                        /** Preview SQL query text */
+                        if (sourceDatasetName === "queries" || sourceDatasetName === "act_queries") {
+                            let queryIndex = Previewer.findQuery(previewRow);
+                            if (queryIndex >= 0) {
+
+                                let queryText = data.datasets[sourceDatasetName][queryIndex].query_texts[0];
+                                Previewer.queryTextPreviewer(previewCell, previewRow, parentRow, queryText);
+
+                                /** Copy query text into clipboard button */
+                                let copyQueryTextButton = Previewer.drawCopyButton();
+                                copyQueryTextButton.setAttribute("class", "copyQueryTextButton");
+                                previewCell.appendChild(copyQueryTextButton);
+
+                                copyQueryTextButton.addEventListener("click", event => {
+                                    navigator.clipboard.writeText(queryText).then(r => console.log(queryText));
+                                });
+                            }
+                        };
+
+                        /** Preview Table storage parameters */
+                        if (sourceDatasetName === "table_storage_parameters" || sourceDatasetName === "index_storage_parameters") {
+                            let sourceDataset = data.datasets[sourceDatasetName]; 
+                            let targetDatasetValue = parentRow.dataset[sourceDatasetKey];
+
+                            let previewData = Utilities.find(sourceDataset, sourceDatasetKey, targetDatasetValue);
+
+                            if (previewData.length) {
+                                let previewDataJSON = JSON.stringify(previewData);
+                                Previewer.storageParamsPreviewer(previewCell, previewRow, parentRow, previewData);
+                            }
                         }
                     } else {
-                        queryRow.style.display = 'none';
+                        previewRow.style.display = 'none';
                     }
                 }
             })

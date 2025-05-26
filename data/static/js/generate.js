@@ -1,7 +1,8 @@
 class BaseSection {
 
-    constructor(section) {
+    constructor(section, deep) {
         this.section = section;
+        this.deep = deep;
         this.sectionHasContent = ('content' in section);
         this.sectionHasTable = ('header' in section);
         this.sectionHasTitle = ('tbl_cap' in section);
@@ -11,8 +12,12 @@ class BaseSection {
      * Method builds and returns html tag with title of section
      * @returns {HTMLHeadingElement}
      */
-    static buildTitle(section) {
+    static buildTitle(section, deep) {
         let title = document.createElement('h3');
+        if (deep != 1) {
+            title = document.createElement('p');
+        }
+        
         title.innerHTML = section.tbl_cap;
         title.id = section.sect_id;
         return title;
@@ -25,7 +30,7 @@ class BaseSection {
             div.setAttribute('id', this.section.sect_id);
         }
         if (this.sectionHasTitle) {
-            div.appendChild(BaseSection.buildTitle(this.section));
+            div.appendChild(BaseSection.buildTitle(this.section, this.deep));
         }
         if (this.sectionHasContent) {
             let contentClass = this.section.content.class;
@@ -80,7 +85,9 @@ class BaseSection {
 
                 /** Class of table determined by parameter 'class' in header (section_structure).
                  * If there are multiple objects in header, then class of table will be overriden */
-                table.setAttribute('class', newBlock.header.class);
+                if (newBlock.header.class) {
+                    table.setAttribute('class', newBlock.header.class);
+                }
 
                 /** If section has highlight attribute, add class highlight to table */
                 if (newBlock.header["highlight"]) {
@@ -322,7 +329,7 @@ class BaseTable extends BaseSection {
                 newRow.setAttribute('data-all', row.hexqueryid);
             }
             let newCell = newRow.insertCell(-1);
-            let text = row[column.id][i];
+            let text = Utilities.preprocessQueryString(row[column.id][i], 5000);
 
             /** Setting attributes to new cell */
             newCell.setAttribute('class', column.class);
@@ -567,6 +574,7 @@ class BaseTable extends BaseSection {
         });
         if (headerMatrix.length === 1) {
             let emptyRow = document.createElement('tr');
+            emptyRow.classList.add("header");
             this.table.appendChild(emptyRow);
         }
     }
@@ -792,7 +800,7 @@ class VerticalTable extends BaseTable {
         return columns;
     }
 
-    static buildCell(newRow, column, row) {
+    static buildCell(newRow, column, row, klass) {
         let specialClass = BaseTable.hasSpecialClass(column);
         if (specialClass) {
             BaseTable.uniqueCells[specialClass](newRow, column, row);
@@ -810,14 +818,16 @@ class VerticalTable extends BaseTable {
         if ('id' in column) {
             newCell.innerHTML = row[0][column.id];
         }
-        if ('class' in column) {
-            newCell.setAttribute('class', column.class);
+        if (klass) {
+            newCell.setAttribute('class', klass);
         }
     }
 
     insertRows() {
         let columns = VerticalTable.getColumns(this.section);
+        let classes = this.section.header.columns;
         let rows = this.section.data;
+
         for (let i = 0; i < columns.length; i++) {
             let newRow = this.table.insertRow(-1);
 
@@ -826,10 +836,13 @@ class VerticalTable extends BaseTable {
                 newRow.classList.add('grey');
             }
 
-            VerticalTable.buildCell(newRow, columns[i], rows);
-            columns[i].cells.forEach(cell => {
-                VerticalTable.buildCell(newRow, cell, rows);
-            });
+            VerticalTable.buildCell(newRow, columns[i], rows, classes[0].class);
+            
+            for (let j = 0; j < columns[i].cells.length; j++) {
+                let cell = columns[i].cells[j];
+                let klass = classes[j+1].class;
+                VerticalTable.buildCell(newRow, cell, rows, klass);
+            }
         }
     }
 }
