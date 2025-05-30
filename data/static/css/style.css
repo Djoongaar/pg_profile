@@ -1,7 +1,7 @@
 :root {
     --main-bg-color: #68B8F9;
     --main-font-color: black;
-    --main-font-family: monospace;
+    --main-font-family: Monospace;
     --main-font-size: 15px;
     --secondary-bg-color: #a4d4fb;
     --main-bottom: -20%;
@@ -21,8 +21,13 @@ html {
     scroll-padding-left: 30%;
 }
 
-h3 {
+div h3 {
     scroll-margin-top: 60px;
+    font-family: var(--main-font-family);
+}
+
+div p {
+    font-family: var(--main-font-family);
 }
 
 td {
@@ -123,7 +128,7 @@ tr {
     padding-left: 20px;
     padding-right: 20px;
     transition: width 500ms;
-    font-family: monospace;
+    font-family: var(--main-font-family);
 }
 
 #pageContent.hidden div.level1 {
@@ -132,9 +137,17 @@ tr {
 }
 
 #pageContent div.level1 {
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     
+}
+
+#sections {
+    padding-top: 1em;
+}
+
+#searchWrap {
+    /*  */
 }
 
 .chapter {
@@ -168,17 +181,23 @@ tr {
     display: block;
     text-decoration: none;
     color: inherit;
-    cursor: default; 
     background: none;
     border: none;
     padding: 5px;
 }
 
 select {
-    padding: 6px;
     margin-top: 8px;
-   /* margin-left: 4px;*/
     border: 0;
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    padding-right: 20px;
+    background: transparent;
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    background-size: 16px 16px;
+    padding: 8px;
 }
 
 #commonstat {

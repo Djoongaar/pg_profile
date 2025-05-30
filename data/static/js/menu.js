@@ -144,13 +144,12 @@ class Menu {
 
         const container = document.createElement('div');
         container.id = 'searchDropdownContainer';
-        container.style.paddingBottom = '1em';
 
     /* Search and button */
         const searchWrapper = document.createElement('div');
         searchWrapper.id = 'searchWrap';
         searchWrapper.style.display = 'flex';
-        searchWrapper.style.gap = '10px';
+        // searchWrapper.style.gap = '10px';
 
         const input = document.createElement('input');
         input.type = 'text';
@@ -201,19 +200,7 @@ class Menu {
 
         const encodedSVG = encodeURIComponent(svgStr);
 
-    // для замены стрелки
-        select.style = `
-        appearance: none; 
-        -webkit-appearance: none; 
-        -moz-appearance: none; 
-        padding-right: 20px;
-        background: transparent;
-        background-image: url("data:image/svg+xml;utf8,${encodedSVG}");
-        background-repeat: no-repeat;
-        background-position: right 5px center;
-        background-size: 16px 16px;
-        padding: 8px;
-        `;
+        select.style.backgroundImage = `url("data:image/svg+xml;utf8,${encodedSVG}")`;
 
     // Вставляем все в контейнер
         container.appendChild(searchWrapper);
@@ -230,6 +217,7 @@ class Menu {
 
     static navigateBorder() {
         document.addEventListener('scroll', function() {
+            
             let width = window.screen.width / 2;
             let height =  0;
             let element = document.elementFromPoint(width, height);
@@ -237,7 +225,7 @@ class Menu {
             let currentSection = element.closest('table, h3, p');
             
             if (currentSection) {
-
+                
                 let sectId = currentSection.getAttribute('id');
                 if (sectId.endsWith('_t')) {
                     sectId = sectId.substring(0, sectId.length-2);
@@ -246,7 +234,6 @@ class Menu {
                 let lastSectId = localStorage.getItem('lastSectId');
                 /** If during scroll section is changed */
                 if (lastSectId != sectId) {
-                    
                     /** And new section is represented in navigator */
                     if (currentMenuItem) {
                         let lastSection = document.getElementById(`menu_${lastSectId}`);
@@ -269,16 +256,19 @@ class Menu {
 
     const searchDropdownContainer = document.getElementById('searchDropdownContainer');
 
-    let initOffsetWidth = document.getElementById('pageContent').offsetWidth;
+    let initPageContentWidth = document.getElementById('pageContent').offsetWidth;
+    container.style.left = `${initPageContentWidth}px`;
+
     let newOffsetWidth = 35;
 
     /* Logo Click Handler */ 
     [logo, logoMini].forEach(elem => 
         elem.addEventListener('click', function() {
+
             if (menu.classList.contains('hidden')) {
                 /* Expand the menu */
-                menu.style.width = `${initOffsetWidth}px`;
-                container.style.left = `${initOffsetWidth + 20}px`;
+                menu.style.width = `${initPageContentWidth}px`;
+                container.style.left = `${initPageContentWidth}px`;
                 menu.classList.remove('hidden');
 
                 logo.classList.remove('hidden');
@@ -291,7 +281,7 @@ class Menu {
             } else {
                 /* Minimizing the menu */
                 menu.style.width = `${newOffsetWidth}px`;
-                container.style.left = `${newOffsetWidth + 60}px`;
+                container.style.left = `${newOffsetWidth + 40}px`;
                 menu.classList.add('hidden');
 
                 logo.classList.add('hidden');
