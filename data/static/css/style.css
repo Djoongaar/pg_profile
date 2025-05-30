@@ -44,7 +44,8 @@ tr {
 #logo, #logoMini {
     display: block;
     margin-top: 1em;
-    margin-bottom: 1em;
+    margin-bottom: 1ex;
+    user-select: none;
 }
 
 #logo.hidden, #logoMini.hidden {
@@ -55,33 +56,103 @@ tr {
     cursor: pointer;
 }
 
-#pageContent {
+.arrow {
+    cursor: pointer;
+    margin-right: 5px;
+    transition: transform 0.3s ease;
+    display: inline-block;
+}
+
+  /* Вращение стрелки вверх */
+  .arrow.up {
+    transform: rotate(180deg);
+}
+
+#createSearchAndDropdown {
+   display: flex;
+   flex-direction: column;
+   gap: 10px;
+}
+
+#searchInput {
+    width: 100%;
+    appearance: none;
+    appearance: none;
+    -webkit-appearance: none; 
+    -moz-appearance: none; 
+    border: none; 
+    outline: none; 
+    background: none; 
+    padding: 8px; 
+    font: inherit;
+}
+
+#searchButton {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    appearance: none; 
+    -webkit-appearance: none; 
+    -moz-appearance: none;
+    padding: 8px;
+    background-image: url("data:image/svg+xml;utf8,${encodeURIComponent(svgStr)}");
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    background-size: 16px 16px;
+}
+
+#searchWrap, #dropdownSelect {
+    width: 100%;
+    border-radius: 50px;
+    outline: none;
+    border: 1px solid #8898AE;
+    height: 30px;
+}
+
+#pageContent, #createSearchAndDropdown {
     position: fixed;
     z-index: 999;
     background-color: #F4F7FA;
     left: 0;
     top: 0;
-    max-width: 20%;
+    max-width: 17%;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    font-size: 14px;
+    font-size: 15px;
     opacity: 1;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
     transition: width 500ms;
+    font-family: monospace;
 }
 
 #pageContent.hidden div.level1 {
     display: none;
+    
 }
 
 #pageContent div.level1 {
-    font-weight: 800;
+    font-weight: 500;
+    cursor: pointer;
+    
 }
 
+.chapter {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 6px;
+    border: 1px solid transparent; 
+    transition: border-color 0.3s ease;
+}
+
+.chapter.activeSection {
+    border-color: #FFC83B;
+}
+
+
 #pageContent div.level2 {
-    font-weight: 600;
+    font-weight: 100;
     padding-left: 1em;
     padding-top: 3px;
 }
@@ -97,20 +168,17 @@ tr {
 #pageContent a {
     display: block;
     text-decoration: none;
-}
-
-#pageContent a:hover {
-    text-decoration: underline;
-}
-
-#pageContent a.activeSection {
-    border: 1px solid #FFC83B;
+    color: inherit;
+    cursor: default; 
+    background: none;
+    border: none;
+    padding: 5px;
 }
 
 select {
     padding: 6px;
     margin-top: 8px;
-    margin-left: 4px;
+   /* margin-left: 4px;*/
     border: 0;
 }
 
