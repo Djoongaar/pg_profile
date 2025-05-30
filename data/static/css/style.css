@@ -45,7 +45,6 @@ tr {
     display: block;
     margin-top: 1em;
     margin-bottom: 1ex;
-    user-select: none;
 }
 
 #logo.hidden, #logoMini.hidden {
