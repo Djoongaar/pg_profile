@@ -24,10 +24,12 @@ html {
 div h3 {
     scroll-margin-top: 60px;
     font-family: var(--main-font-family);
+    font-size: 22px;
 }
 
 div p {
     font-family: var(--main-font-family);
+    font-size: 17px;
 }
 
 td {
@@ -50,6 +52,16 @@ tr {
     display: block;
     margin-top: 1em;
     margin-bottom: 1ex;
+}
+
+#logo {
+  width: 150px;
+  height: 50px;
+}
+
+#logoMini {
+  width: 40px;
+  height: 40px;
 }
 
 #logo.hidden, #logoMini.hidden {
@@ -81,14 +93,13 @@ tr {
 #searchInput {
     width: 100%;
     appearance: none;
-    appearance: none;
     -webkit-appearance: none; 
     -moz-appearance: none; 
     border: none; 
     outline: none; 
     background: none; 
     padding: 8px; 
-    font: inherit;
+    font-family: var(--main-font-family);
 }
 
 #searchButton {
@@ -99,10 +110,10 @@ tr {
     -webkit-appearance: none; 
     -moz-appearance: none;
     padding: 8px;
-    background-image: url("data:image/svg+xml;utf8,${encodeURIComponent(svgStr)}");
     background-repeat: no-repeat;
     background-position: right 5px center;
     background-size: 16px 16px;
+    vertical-align: middle;
 }
 
 #searchWrap, #dropdownSelect {
@@ -111,6 +122,7 @@ tr {
     outline: none;
     border: 1px solid #8898AE;
     height: 30px;
+    font-family: var(--main-font-family);
 }
 
 #pageContent, #createSearchAndDropdown {
@@ -146,22 +158,17 @@ tr {
     padding-top: 1em;
 }
 
-#searchWrap {
-    /*  */
-}
-
 .chapter {
+    position: relative;
     display: flex;
     justify-content: space-between;
-    border-radius: 6px;
-    border: 1px solid transparent; 
     transition: border-color 0.3s ease;
 }
 
 .chapter.activeSection {
-    border-color: #FFC83B;
+    border-radius: 6px;
+    border: 1px solid #FFC83B; 
 }
-
 
 #pageContent div.level2 {
     font-weight: 100;
@@ -183,7 +190,7 @@ tr {
     color: inherit;
     background: none;
     border: none;
-    padding: 5px;
+    padding: 3px;
 }
 
 select {

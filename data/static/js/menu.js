@@ -2,9 +2,9 @@
  * Class 
  */
 class Menu {
-    /* building the page content */
+    /** building the page content */
     static buildPageContent(data, parentNode, deep = 1) {
-    /* Click handler for the entire container */
+    /** Click handler for the entire container */
     document.getElementById('pageContent').addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (link && link.closest('div[class^="level"]')) {
@@ -20,7 +20,7 @@ class Menu {
             localStorage.setItem('lastSectId', targetId);
         }
     });
-    /* Inserting an arrow */
+    /** Inserting an arrow */
     function addArrowToDiv(div) {
         if (div.querySelector('.arrow')) return;
         const arrowHTML = `
@@ -40,7 +40,7 @@ class Menu {
             }
         });
     }
-    /* Creating a table of contents */
+    /** Creating a table of contents */
     data.sections.forEach(section => {
         const hasTableCap = ('toc_cap' in section);
         const hasNestedSections = ('sections' in section);
@@ -86,7 +86,7 @@ class Menu {
         parentNode.appendChild(div);
     });
 
-    /* Adding the "chapter" class to links */
+    /** Adding the "chapter" class to links */
     const allLinks = parentNode.querySelectorAll('div[class^="level"] a');
     allLinks.forEach(link => {
         const parentDiv = link.closest('div');
@@ -97,22 +97,18 @@ class Menu {
 
     return parentNode;
 }
-
+    /** Create a logo */
     static drawLogo() {
         let reportContent = document.getElementById('pageContent');
 
         let logo = document.createElement('img');
         logo.setAttribute('id', 'logo');
         logo.setAttribute('src', 'data/static/js/logo.svg')
-        logo.setAttribute('width', '150');
-        logo.setAttribute('height', '50');
 
         let logoMini = document.createElement('img');
         logoMini.setAttribute('id', 'logoMini');
-        logoMini.setAttribute('class', 'hidden');
         logoMini.setAttribute('src', 'data/static/js/logo_mini.svg')
-        logoMini.setAttribute('width', '40');
-        logoMini.setAttribute('height', '40');
+        logoMini.setAttribute('class', 'hidden');
         
         reportContent.insertAdjacentElement('afterbegin', logo);
         reportContent.insertAdjacentElement('afterbegin', logoMini);
@@ -138,18 +134,17 @@ class Menu {
         this.createSearchAndDropdown();
     }
 
-    /* Creating an input and selection field */
+    /** Creating an input and selection field */
     static createSearchAndDropdown() {
         const body = document.querySelector('body');
 
         const container = document.createElement('div');
         container.id = 'searchDropdownContainer';
 
-    /* Search and button */
+    /** Search and button */
         const searchWrapper = document.createElement('div');
         searchWrapper.id = 'searchWrap';
         searchWrapper.style.display = 'flex';
-        // searchWrapper.style.gap = '10px';
 
         const input = document.createElement('input');
         input.type = 'text';
@@ -160,53 +155,49 @@ class Menu {
         searchButton.type = 'button';
         searchButton.id = 'searchButton';
 
-    // Вставляем SVG внутрь кнопки
+    /** Inserting SVG into the search field */
         searchButton.innerHTML = `
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clip-path="url(#clip0_371_5886)">
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#clip0_371_5886)">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M7 14C10.866 14 14 10.866 14 7C14 3.13401 10.866 0 7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14ZM7 12C9.76142 12 12 9.76142 12 7C12 4.23858 9.76142 2 7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12ZM14 12.5858L15.7071 14.2929L14.2929 15.7071L12.5858 14L14 12.5858ZM6.24974 6.33882C6.43444 6.12956 6.70147 6 7 6V4C6.10384 4 5.2985 4.3942 4.75026 5.01535L6.24974 6.33882Z" fill="#14B0FF"/>
-            </g>
-            <defs>
+        </g>
+        <defs>
             <clipPath id="clip0_371_5886">
-            <rect width="16" height="16" fill="white"/>
+                <rect width="16" height="16" fill="white"/>
             </clipPath>
-            </defs>
-            </svg>`;
-
+        </defs>
+    </svg>`;
         searchWrapper.appendChild(input);
         searchWrapper.appendChild(searchButton);
 
-    // Создаем кастомный селект
+    /** Creating a field with a drop-down list */
         const select = document.createElement('select');
         select.id = 'dropdownSelect';
-
-    // Добавляем опцию по умолчанию
+    /** Adding options */
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'Choice';
         select.appendChild(defaultOption);
 
-    // Примерные опции
         ['1', '2'].forEach((text, index) => {
             const option = document.createElement('option');
             option.value = `option${index + 1}`;
             option.textContent = text;
             select.appendChild(option);
         });
-
-        const svgStr = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    /** Insert the svg arrow into the drop-down list box */
+        const arrowBlue = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
             </svg>`;
 
-        const encodedSVG = encodeURIComponent(svgStr);
-
+        const encodedSVG = encodeURIComponent(arrowBlue);
         select.style.backgroundImage = `url("data:image/svg+xml;utf8,${encodedSVG}")`;
 
-    // Вставляем все в контейнер
+    /** Inserting the fields into the container */
         container.appendChild(searchWrapper);
         container.appendChild(select);
 
-    // Вставляем после логотипов
+    /** We insert it after the logos */
         const logoContainer = document.getElementById('logo');
         if (logoContainer && logoContainer.parentNode) {
             logoContainer.parentNode.insertBefore(container, logoContainer.nextSibling);
@@ -248,6 +239,37 @@ class Menu {
         })
     }
 
+    static navigateBorder_2() {
+    document.addEventListener('scroll', () => {
+      /** Position of the current section */
+      const width = window.innerWidth / 2;
+      const height = 0;
+      const element = document.elementFromPoint(width, height);
+      if (!element) return;
+      /** We find the nearest parent div or other element containing h3 or p */
+      const currentDiv = element.closest('div');
+      if (currentDiv) {
+        /** Is there a div h3 or p with an id inside it */
+        const targetHeader = currentDiv.querySelector('h3[id], p[id]');
+        if (targetHeader) {
+          const sectId = targetHeader.getAttribute('id');
+          /** We find the link inside .chapter,'a.href' which refers to this id */
+          const chapterLinks = document.querySelectorAll('.chapter a');
+          chapterLinks.forEach(link => {
+            const hrefId = link.getAttribute('href').substring(1);
+            const chapterDiv = link.closest('.chapter');
+            if (hrefId === sectId) {
+              /** Removing the class from everyone */
+              document.querySelectorAll('.chapter').forEach(ch => ch.classList.remove('activeSection'));
+              /** Adding the active class to the current one */
+              chapterDiv.classList.add('activeSection');
+            }
+          });
+        }
+      }
+    });
+    }
+
     static toggleMenu() {
     let menu = document.getElementById('pageContent');
     let logo = document.getElementById('logo');
@@ -261,12 +283,12 @@ class Menu {
 
     let newOffsetWidth = 35;
 
-    /* Logo Click Handler */ 
+    /** Expand the menu */
     [logo, logoMini].forEach(elem => 
         elem.addEventListener('click', function() {
 
             if (menu.classList.contains('hidden')) {
-                /* Expand the menu */
+                /** Expand the menu */
                 menu.style.width = `${initPageContentWidth}px`;
                 container.style.left = `${initPageContentWidth}px`;
                 menu.classList.remove('hidden');
@@ -279,7 +301,7 @@ class Menu {
                 }
 
             } else {
-                /* Minimizing the menu */
+                /** Minimizing the menu */
                 menu.style.width = `${newOffsetWidth}px`;
                 container.style.left = `${newOffsetWidth + 40}px`;
                 menu.classList.add('hidden');
@@ -297,7 +319,8 @@ class Menu {
 
     static init() {
         this.buildMenu();
-        this.navigateBorder();
+        this.navigateBorder_2();
+       /* this.navigateBorder();*/
         this.toggleMenu();
     }
 }
