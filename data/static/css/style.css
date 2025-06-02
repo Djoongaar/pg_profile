@@ -347,6 +347,10 @@ table tr.previewRow {
     background-color: white;
 }
 
+.previewText {
+    font-size: 13px;
+}
+
 table tr.grey {
     background-color: #eee;
 }

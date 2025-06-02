@@ -14,7 +14,7 @@ class Previewer {
         /** Query text preview */
         if (!queryCell.hasChildNodes()) {
             let preprocessedText = Utilities.preprocessQueryString(queryString, 1000);
-            queryCell.insertAdjacentHTML('afterbegin', `<p><i>${preprocessedText}</i></p>`);
+            queryCell.insertAdjacentHTML('afterbegin', `<p><i class="previewText">${preprocessedText}</i></p>`);
         }
     }
 

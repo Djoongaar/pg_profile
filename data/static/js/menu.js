@@ -210,15 +210,22 @@ class Menu {
     /** Track the scroll position and highlight the relevant sections in the menu */
     static navigateBorder() {
         document.addEventListener('scroll', () => {
-            const width = window.innerWidth / 2;
+            const width = document.getElementById('pageContent').offsetWidth + 30;
             const height = 0;
             const element = document.elementFromPoint(width, height);
             if (!element) return;
-            const targetHeader = element.closest('h3[id], p[id]');
-            if (!targetHeader) return;
-            const sectId = targetHeader.getAttribute('id');
+            let targetHeader = element.closest('h3[id], p[id]');
+            if (!targetHeader) {
+                let table = element.closest('table');
+                if (table) {
+                    targetHeader = table.parentNode.firstChild;
+                } else {
+                    return;
+                }
+            }
+            let sectId = targetHeader.getAttribute('id');
             if (!sectId) return;
-            const chapterBlock = document.querySelectorAll('.chapter a');
+            let chapterBlock = document.querySelectorAll('.chapter a');
             /** Removing the 'activeSection' from everyone */
             document.querySelectorAll('.chapter.activeSection').forEach(ch => ch.classList.remove('activeSection'));
             /** We are looking for a link that matches the id */
@@ -249,14 +256,12 @@ class Menu {
     container.style.left = `${initPageContentWidth}px`;
     menu.style.width = `${initPageContentWidth - 40}px`;
     let newOffsetWidth = 35;
-    console.log('initPageContentWidth', initPageContentWidth);
     /** Expand the menu */
     [logo, logoMini].forEach(elem => 
         elem.addEventListener('click', function() {
 
             if (menu.classList.contains('hidden')) {
                 /** Expand the menu */
-                console.log('pageContentWidth', document.getElementById('pageContent').offsetWidth);
                 menu.style.width = `${initPageContentWidth - 40}px`;
                 container.style.left = `${initPageContentWidth}px`;
                 menu.classList.remove('hidden');
