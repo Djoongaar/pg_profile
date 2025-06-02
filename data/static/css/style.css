@@ -32,6 +32,10 @@ div p {
     font-size: 17px;
 }
 
+p i {
+    font-size: 13px;
+}
+
 td {
     scroll-margin-top: 50px;
 }
@@ -79,12 +83,11 @@ tr {
     display: inline-block;
 }
 
-/* Вращение стрелки вверх */
 .arrow.up {
     transform: rotate(180deg);
 }
 
-#searchInput {
+#searchField {
     width: 100%;
     appearance: none;
     -webkit-appearance: none; 
@@ -345,10 +348,6 @@ table tr.int2 td {
 
 table tr.previewRow {
     background-color: white;
-}
-
-.previewText {
-    font-size: 13px;
 }
 
 table tr.grey {

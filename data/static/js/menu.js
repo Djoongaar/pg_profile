@@ -2,9 +2,10 @@
  * Class 
  */
 class Menu {
-    /** building the page content */
+    /** implementation of dynamic page content construction */
     static buildPageContent(data, parentNode, deep = 1) {
-    /** Click handler for the entire container */
+
+    /** Click handler for content */
     document.getElementById('pageContent').addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (link && link.closest('div[class^="level"]')) {
@@ -21,7 +22,7 @@ class Menu {
         }
     });
 
-    /** Inserting an arrow */
+    /** Inserting an arrow for the content */
     function addArrowToDiv(div) {
         if (div.querySelector('.arrow')) return;
         const arrowHTML = `
@@ -31,17 +32,20 @@ class Menu {
         const container = div.querySelector('div:first-child') || div;
         container.insertAdjacentHTML('beforeend', arrowHTML);
         const arrow = container.querySelector('.arrow');
-        arrow.addEventListener('click', (e) => {
-            e.stopPropagation();
+        /** Click on the entire block */
+        container.addEventListener('click', () => {
             const nestedDiv = div.querySelector('.nested-sections');
             if (nestedDiv) {
                 nestedDiv.classList.toggle('hidden');
-                arrow.classList.toggle('up');
+                if (arrow) {
+                    /** Turn the arrow */
+                    arrow.classList.toggle('up');
+                }
             }
         });
     }
 
-    /** Creating a table of contents */
+    /** Creating hierarchical content */
     data.sections.forEach(section => {
         const hasTableCap = ('toc_cap' in section);
         const hasNestedSections = ('sections' in section);
@@ -139,17 +143,16 @@ class Menu {
         const body = document.querySelector('body');
         const container = document.createElement('div');
         container.id = 'searchDropdownContainer';
-
-    /** Search and button */
+    /** A block is being created for the search field and its buttons*/
         const searchWrapper = document.createElement('div');
         searchWrapper.id = 'searchWrap';
         searchWrapper.style.display = 'flex';
-
+        /** Creating a search field */
         const input = document.createElement('input');
         input.type = 'text';
-        input.id = 'searchInput';
+        input.id = 'searchField';
         input.placeholder = 'Search';
-
+        /** Creating a search button */
         const searchButton = document.createElement('button');
         searchButton.type = 'button';
         searchButton.id = 'searchButton';
@@ -191,8 +194,8 @@ class Menu {
             <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
             </svg>`;
 
-        const encodedSVG = encodeURIComponent(arrowBlue);
-        select.style.backgroundImage = `url("data:image/svg+xml;utf8,${encodedSVG}")`;
+        const DropDownArrow  = encodeURIComponent(arrowBlue);
+        select.style.backgroundImage = `url("data:image/svg+xml;utf8,${DropDownArrow }")`;
 
     /** Inserting the fields into the container */
         container.appendChild(searchWrapper);
@@ -244,7 +247,7 @@ class Menu {
         });
     }
 
-
+    /** Opening and closing menus on a page, and switching logos */
     static toggleMenu() {
     let menu = document.getElementById('pageContent');
     let logo = document.getElementById('logo');
@@ -253,6 +256,7 @@ class Menu {
 
     let searchDropdownContainer = document.getElementById('searchDropdownContainer');
     let initPageContentWidth = document.getElementById('pageContent').offsetWidth;
+    /** Setting the initial position and width */
     container.style.left = `${initPageContentWidth}px`;
     menu.style.width = `${initPageContentWidth - 40}px`;
     let newOffsetWidth = 35;
@@ -286,40 +290,6 @@ class Menu {
             }
         })
     )
-    }
-    
-    /** Reveal all levels of the list when scrolling */
-    static expandParentSections(element) {
-        let parent = element.closest('div');
-        while (parent && parent !== document) {
-        /** If the parent has a class named 'nested-sections' */
-        if (parent.classList.contains('nested-sections')) {
-            /** If it is hidden, we reveal it. */
-            if (parent.classList.contains('hidden')) {
-                parent.classList.remove('hidden');
-                const arrow = parent.previousElementSibling?.querySelector('.arrow');
-                if (arrow) {
-                    arrow.classList.add('up');
-                }
-            }
-        }
-        parent = parent.parentElement;
-        }
-    }
-
-    /** Close the list when scrolling further */
-    static closeAllNestedSections() {
-        const nestedSections = document.querySelectorAll('.nested-sections');
-        nestedSections.forEach(section => {
-        /** If the section is not hidden, we hide it. */
-            if (!section.classList.contains('hidden')) {
-                section.classList.add('hidden');
-                const arrow = section.previousElementSibling?.querySelector('.arrow');
-                if (arrow) {
-                    arrow.classList.remove('up');
-                }
-            }
-        });
     }
 
     static init() {
