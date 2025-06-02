@@ -20,6 +20,7 @@ class Menu {
             localStorage.setItem('lastSectId', targetId);
         }
     });
+
     /** Inserting an arrow */
     function addArrowToDiv(div) {
         if (div.querySelector('.arrow')) return;
@@ -29,7 +30,6 @@ class Menu {
             </svg>`;
         const container = div.querySelector('div:first-child') || div;
         container.insertAdjacentHTML('beforeend', arrowHTML);
-
         const arrow = container.querySelector('.arrow');
         arrow.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -40,6 +40,7 @@ class Menu {
             }
         });
     }
+
     /** Creating a table of contents */
     data.sections.forEach(section => {
         const hasTableCap = ('toc_cap' in section);
@@ -58,7 +59,6 @@ class Menu {
             a.classList.add('anchor');
             a.setAttribute('id', `menu_${section.sect_id}`);
             container.appendChild(a);
-
             div.appendChild(container);
         }
 
@@ -94,9 +94,9 @@ class Menu {
             parentDiv.classList.add('chapter');
         }
     });
-
     return parentNode;
-}
+    }
+
     /** Create a logo */
     static drawLogo() {
         let reportContent = document.getElementById('pageContent');
@@ -137,7 +137,6 @@ class Menu {
     /** Creating an input and selection field */
     static createSearchAndDropdown() {
         const body = document.querySelector('body');
-
         const container = document.createElement('div');
         container.id = 'searchDropdownContainer';
 
@@ -173,6 +172,7 @@ class Menu {
     /** Creating a field with a drop-down list */
         const select = document.createElement('select');
         select.id = 'dropdownSelect';
+
     /** Adding options */
         const defaultOption = document.createElement('option');
         defaultOption.value = '';
@@ -185,6 +185,7 @@ class Menu {
             option.textContent = text;
             select.appendChild(option);
         });
+        
     /** Insert the svg arrow into the drop-down list box */
         const arrowBlue = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
@@ -206,69 +207,36 @@ class Menu {
         }
     }
 
+    /** Track the scroll position and highlight the relevant sections in the menu */
     static navigateBorder() {
-        document.addEventListener('scroll', function() {
-            
-            let width = window.screen.width / 2;
-            let height =  0;
-            let element = document.elementFromPoint(width, height);
-
-            let currentSection = element.closest('table, h3, p');
-            
-            if (currentSection) {
-                
-                let sectId = currentSection.getAttribute('id');
-                if (sectId.endsWith('_t')) {
-                    sectId = sectId.substring(0, sectId.length-2);
-                }
-                let currentMenuItem = document.getElementById(`menu_${sectId}`);
-                let lastSectId = localStorage.getItem('lastSectId');
-                /** If during scroll section is changed */
-                if (lastSectId != sectId) {
-                    /** And new section is represented in navigator */
-                    if (currentMenuItem) {
-                        let lastSection = document.getElementById(`menu_${lastSectId}`);
-                        localStorage.setItem('lastSectId', sectId);
-                        lastSection.classList.remove('activeSection');
-                        currentMenuItem.classList.add('activeSection');
+        document.addEventListener('scroll', () => {
+            const width = window.innerWidth / 2;
+            const height = 0;
+            const element = document.elementFromPoint(width, height);
+            if (!element) return;
+            const targetHeader = element.closest('h3[id], p[id]');
+            if (!targetHeader) return;
+            const sectId = targetHeader.getAttribute('id');
+            if (!sectId) return;
+            const chapterBlock = document.querySelectorAll('.chapter a');
+            /** Removing the 'activeSection' from everyone */
+            document.querySelectorAll('.chapter.activeSection').forEach(ch => ch.classList.remove('activeSection'));
+            /** We are looking for a link that matches the id */
+            for (let link of chapterBlock) {
+                const href = link.getAttribute('href');
+                if (!href || !href.startsWith('#')) continue;
+                const hrefId = href.substring(1);
+                if (hrefId === sectId) {
+                    const chapterDiv = link.closest('.chapter');
+                    if (chapterDiv) {
+                    chapterDiv.classList.add('activeSection');
+                    break;
                     }
-                } else if (currentMenuItem && !currentMenuItem.classList.contains('activeSection')) {
-                    currentMenuItem.classList.add('activeSection');
                 }
             }
-        })
+        });
     }
 
-    static navigateBorder_2() {
-    document.addEventListener('scroll', () => {
-      /** Position of the current section */
-      const width = window.innerWidth / 2;
-      const height = 0;
-      const element = document.elementFromPoint(width, height);
-      if (!element) return;
-      /** We find the nearest parent div or other element containing h3 or p */
-      const currentDiv = element.closest('div');
-      if (currentDiv) {
-        /** Is there a div h3 or p with an id inside it */
-        const targetHeader = currentDiv.querySelector('h3[id], p[id]');
-        if (targetHeader) {
-          const sectId = targetHeader.getAttribute('id');
-          /** We find the link inside .chapter,'a.href' which refers to this id */
-          const chapterLinks = document.querySelectorAll('.chapter a');
-          chapterLinks.forEach(link => {
-            const hrefId = link.getAttribute('href').substring(1);
-            const chapterDiv = link.closest('.chapter');
-            if (hrefId === sectId) {
-              /** Removing the class from everyone */
-              document.querySelectorAll('.chapter').forEach(ch => ch.classList.remove('activeSection'));
-              /** Adding the active class to the current one */
-              chapterDiv.classList.add('activeSection');
-            }
-          });
-        }
-      }
-    });
-    }
 
     static toggleMenu() {
     let menu = document.getElementById('pageContent');
@@ -277,12 +245,9 @@ class Menu {
     let container = document.getElementById('container');
 
     const searchDropdownContainer = document.getElementById('searchDropdownContainer');
-
     let initPageContentWidth = document.getElementById('pageContent').offsetWidth;
     container.style.left = `${initPageContentWidth}px`;
-
     let newOffsetWidth = 35;
-
     /** Expand the menu */
     [logo, logoMini].forEach(elem => 
         elem.addEventListener('click', function() {
@@ -316,11 +281,44 @@ class Menu {
         })
     )
     }
+    
+    /** Reveal all levels of the list when scrolling */
+    static expandParentSections(element) {
+        let parent = element.closest('div');
+        while (parent && parent !== document) {
+        /** If the parent has a class named 'nested-sections' */
+        if (parent.classList.contains('nested-sections')) {
+            /** If it is hidden, we reveal it. */
+            if (parent.classList.contains('hidden')) {
+                parent.classList.remove('hidden');
+                const arrow = parent.previousElementSibling?.querySelector('.arrow');
+                if (arrow) {
+                    arrow.classList.add('up');
+                }
+            }
+        }
+        parent = parent.parentElement;
+        }
+    }
+
+    /** Close the list when scrolling further */
+    static closeAllNestedSections() {
+        const nestedSections = document.querySelectorAll('.nested-sections');
+        nestedSections.forEach(section => {
+        /** If the section is not hidden, we hide it. */
+            if (!section.classList.contains('hidden')) {
+                section.classList.add('hidden');
+                const arrow = section.previousElementSibling?.querySelector('.arrow');
+                if (arrow) {
+                    arrow.classList.remove('up');
+                }
+            }
+        });
+    }
 
     static init() {
         this.buildMenu();
-        this.navigateBorder_2();
-       /* this.navigateBorder();*/
+        this.navigateBorder();
         this.toggleMenu();
     }
 }
