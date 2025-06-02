@@ -244,26 +244,28 @@ class Menu {
     let logoMini = document.getElementById('logoMini');
     let container = document.getElementById('container');
 
-    const searchDropdownContainer = document.getElementById('searchDropdownContainer');
+    let searchDropdownContainer = document.getElementById('searchDropdownContainer');
     let initPageContentWidth = document.getElementById('pageContent').offsetWidth;
     container.style.left = `${initPageContentWidth}px`;
+    menu.style.width = `${initPageContentWidth - 40}px`;
     let newOffsetWidth = 35;
+    console.log('initPageContentWidth', initPageContentWidth);
     /** Expand the menu */
     [logo, logoMini].forEach(elem => 
         elem.addEventListener('click', function() {
 
             if (menu.classList.contains('hidden')) {
                 /** Expand the menu */
-                menu.style.width = `${initPageContentWidth}px`;
+                console.log('pageContentWidth', document.getElementById('pageContent').offsetWidth);
+                menu.style.width = `${initPageContentWidth - 40}px`;
                 container.style.left = `${initPageContentWidth}px`;
                 menu.classList.remove('hidden');
 
                 logo.classList.remove('hidden');
                 logoMini.classList.add('hidden');
-
-                if (searchDropdownContainer) {
-                    searchDropdownContainer.style.display = '';
-                }
+                
+                /* Show searchMenu on click on Logo */
+                searchDropdownContainer.classList.remove('hidden');
 
             } else {
                 /** Minimizing the menu */
@@ -273,10 +275,9 @@ class Menu {
 
                 logo.classList.add('hidden');
                 logoMini.classList.remove('hidden');
-
-                if (searchDropdownContainer) {
-                    searchDropdownContainer.style.display = 'none';
-                }
+                
+                /* Hide searchMenu on click on Logo */
+                searchDropdownContainer.classList.add('hidden');
             }
         })
     )
