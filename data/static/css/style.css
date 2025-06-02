@@ -116,12 +116,18 @@ tr {
     vertical-align: middle;
 }
 
-#searchWrap, #dropdownSelect {
+#searchWrap {
+    border-radius: 50px;
+    outline: none;
+    border: 1px solid #8898AE;
+    font-family: var(--main-font-family);
+}
+
+#dropdownSelect {
     width: 100%;
     border-radius: 50px;
     outline: none;
     border: 1px solid #8898AE;
-    height: 30px;
     font-family: var(--main-font-family);
 }
 
@@ -162,7 +168,6 @@ tr {
     position: relative;
     display: flex;
     justify-content: space-between;
-    transition: border-color 0.3s ease;
 }
 
 .chapter.activeSection {
