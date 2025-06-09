@@ -7,14 +7,11 @@ class Menu {
 
     /** Click handler for content */
     document.getElementById('pageContent').addEventListener('click', (e) => {
-        const link = e.target.closest('a');
+        let link = e.target.closest('a');
         if (link && link.closest('div[class^="level"]')) {
             e.preventDefault();
-            const parentDiv = link.closest('div');
-            document.querySelectorAll('.chapter').forEach(div => div.classList.remove('activeSection'));
-            parentDiv.classList.add('activeSection');
-            const targetId = link.getAttribute('href').substring(1);
-            const targetSection = document.getElementById(targetId);
+            let targetId = link.getAttribute('href').substring(1);
+            let targetSection = document.getElementById(targetId);
             if (targetSection) {
                 targetSection.scrollIntoView({ behavior: 'smooth' });
             }
@@ -29,12 +26,12 @@ class Menu {
             <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
             </svg>`;
-        const container = div.querySelector('div:first-child') || div;
+        let container = div.querySelector('div:first-child') || div;
         container.insertAdjacentHTML('beforeend', arrowHTML);
-        const arrow = container.querySelector('.arrow');
+        let arrow = container.querySelector('.arrow');
         /** Click on the entire block */
         container.addEventListener('click', () => {
-            const nestedDiv = div.querySelector('.nested-sections');
+            let nestedDiv = div.querySelector('.nested-sections');
             if (nestedDiv) {
                 nestedDiv.classList.toggle('hidden');
                 if (arrow) {
@@ -47,17 +44,17 @@ class Menu {
 
     /** Creating hierarchical content */
     data.sections.forEach(section => {
-        const hasTableCap = ('toc_cap' in section);
-        const hasNestedSections = ('sections' in section);
+        let hasTableCap = ('toc_cap' in section);
+        let hasNestedSections = ('sections' in section);
         let div = document.createElement('div');
         div.classList.add(`level${deep}`);
 
         if (hasTableCap) {
-            const container = document.createElement('div');
+            let container = document.createElement('div');
             container.style.display = 'flex';
             container.style.alignItems = 'center';
 
-            const a = document.createElement('a');
+            let a = document.createElement('a');
             a.innerHTML = section.toc_cap;
             a.href = `#${section.sect_id}`;
             a.classList.add('anchor');
@@ -67,17 +64,17 @@ class Menu {
         }
 
         if (hasNestedSections) {
-            const nestedDiv = document.createElement('div');
+            let nestedDiv = document.createElement('div');
             nestedDiv.className = 'nested-sections hidden';
             this.buildPageContent(section, nestedDiv, deep + 1);
 
             if (deep === 1) { 
-                const level2Divs = nestedDiv.querySelectorAll('div.level2');
+                let level2Divs = nestedDiv.querySelectorAll('div.level2');
                 if (level2Divs.length > 2) {
                     addArrowToDiv(div);
                 }
                 level2Divs.forEach(level2 => {
-                    const level3Divs = level2.querySelectorAll('div.level3');
+                    let level3Divs = level2.querySelectorAll('div.level3');
                     if (level3Divs.length > 2) {
                         addArrowToDiv(level2);
                     }
@@ -91,9 +88,9 @@ class Menu {
     });
 
     /** Adding the "chapter" class to links */
-    const allLinks = parentNode.querySelectorAll('div[class^="level"] a');
+    let allLinks = parentNode.querySelectorAll('div[class^="level"] a');
     allLinks.forEach(link => {
-        const parentDiv = link.closest('div');
+        let parentDiv = link.closest('div');
         if (parentDiv) {
             parentDiv.classList.add('chapter');
         }
@@ -141,19 +138,19 @@ class Menu {
     /** Creating an input and selection field */
     static createSearchAndDropdown() {
         const body = document.querySelector('body');
-        const container = document.createElement('div');
+        let container = document.createElement('div');
         container.id = 'searchDropdownContainer';
     /** A block is being created for the search field and its buttons*/
-        const searchWrapper = document.createElement('div');
+        let searchWrapper = document.createElement('div');
         searchWrapper.id = 'searchWrap';
         searchWrapper.style.display = 'flex';
         /** Creating a search field */
-        const input = document.createElement('input');
+        let input = document.createElement('input');
         input.type = 'text';
         input.id = 'searchField';
         input.placeholder = 'Search';
         /** Creating a search button */
-        const searchButton = document.createElement('button');
+        let searchButton = document.createElement('button');
         searchButton.type = 'button';
         searchButton.id = 'searchButton';
 
@@ -173,17 +170,17 @@ class Menu {
         searchWrapper.appendChild(searchButton);
 
     /** Creating a field with a drop-down list */
-        const select = document.createElement('select');
+        let select = document.createElement('select');
         select.id = 'dropdownSelect';
 
     /** Adding options */
-        const defaultOption = document.createElement('option');
+        let defaultOption = document.createElement('option');
         defaultOption.value = '';
         defaultOption.textContent = 'Choice';
         select.appendChild(defaultOption);
 
         ['1', '2'].forEach((text, index) => {
-            const option = document.createElement('option');
+            let option = document.createElement('option');
             option.value = `option${index + 1}`;
             option.textContent = text;
             select.appendChild(option);
@@ -194,7 +191,7 @@ class Menu {
             <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
             </svg>`;
 
-        const DropDownArrow  = encodeURIComponent(arrowBlue);
+        let DropDownArrow  = encodeURIComponent(arrowBlue);
         select.style.backgroundImage = `url("data:image/svg+xml;utf8,${DropDownArrow }")`;
 
     /** Inserting the fields into the container */
@@ -202,7 +199,7 @@ class Menu {
         container.appendChild(select);
 
     /** We insert it after the logos */
-        const logoContainer = document.getElementById('logo');
+        let logoContainer = document.getElementById('logo');
         if (logoContainer && logoContainer.parentNode) {
             logoContainer.parentNode.insertBefore(container, logoContainer.nextSibling);
         } else {
@@ -237,7 +234,7 @@ class Menu {
                 if (!href || !href.startsWith('#')) continue;
                 const hrefId = href.substring(1);
                 if (hrefId === sectId) {
-                    const chapterDiv = link.closest('.chapter');
+                    let chapterDiv = link.closest('.chapter');
                     if (chapterDiv) {
                     chapterDiv.classList.add('activeSection');
                     break;
