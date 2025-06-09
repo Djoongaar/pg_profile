@@ -5,97 +5,98 @@ class Menu {
     /** implementation of dynamic page content construction */
     static buildPageContent(data, parentNode, deep = 1) {
 
-    /** Click handler for content */
-    document.getElementById('pageContent').addEventListener('click', (e) => {
-        let link = e.target.closest('a');
-        if (link && link.closest('div[class^="level"]')) {
-            e.preventDefault();
-            let targetId = link.getAttribute('href').substring(1);
-            let targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.scrollIntoView({ behavior: 'smooth' });
-            }
-            localStorage.setItem('lastSectId', targetId);
-        }
-    });
-
-    /** Inserting an arrow for the content */
-    function addArrowToDiv(div) {
-        if (div.querySelector('.arrow')) return;
-        const arrowHTML = `
-            <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
-            </svg>`;
-        let container = div.querySelector('div:first-child') || div;
-        container.insertAdjacentHTML('beforeend', arrowHTML);
-        let arrow = container.querySelector('.arrow');
-        /** Click on the entire block */
-        container.addEventListener('click', () => {
-            let nestedDiv = div.querySelector('.nested-sections');
-            if (nestedDiv) {
-                nestedDiv.classList.toggle('hidden');
-                if (arrow) {
-                    /** Turn the arrow */
-                    arrow.classList.toggle('up');
+        /** Click handler for content */
+        document.getElementById('pageContent').addEventListener('click', (e) => {
+            let link = e.target.closest('a');
+            if (link && link.closest('div[class^="level"]')) {
+                e.preventDefault();
+                let targetId = link.getAttribute('href').substring(1);
+                let targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
                 }
+                localStorage.setItem('lastSectId', targetId);
             }
         });
-    }
 
-    /** Creating hierarchical content */
-    data.sections.forEach(section => {
-        let hasTableCap = ('toc_cap' in section);
-        let hasNestedSections = ('sections' in section);
-        let div = document.createElement('div');
-        div.classList.add(`level${deep}`);
-
-        if (hasTableCap) {
-            let container = document.createElement('div');
-            container.style.display = 'flex';
-            container.style.alignItems = 'center';
-
-            let a = document.createElement('a');
-            a.innerHTML = section.toc_cap;
-            a.href = `#${section.sect_id}`;
-            a.classList.add('anchor');
-            a.setAttribute('id', `menu_${section.sect_id}`);
-            container.appendChild(a);
-            div.appendChild(container);
+        /** Inserting an arrow for the content */
+        function addArrowToDiv(div) {
+            if (div.querySelector('.arrow')) return;
+            const arrowHTML = `
+                <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
+                </svg>`;
+            let container = div.querySelector('div:first-child') || div;
+            container.insertAdjacentHTML('beforeend', arrowHTML);
+            let arrow = container.querySelector('.arrow');
+            /** Click on the entire block */
+            container.addEventListener('click', () => {
+                let nestedDiv = div.querySelector('.nested-sections');
+                if (nestedDiv) {
+                    nestedDiv.classList.toggle('hidden');
+                    if (arrow) {
+                        /** Turn the arrow */
+                        arrow.classList.toggle('up');
+                    }
+                }
+            });
         }
 
-        if (hasNestedSections) {
-            let nestedDiv = document.createElement('div');
-            nestedDiv.className = 'nested-sections hidden';
-            this.buildPageContent(section, nestedDiv, deep + 1);
+        /** Creating hierarchical content */
+        data.sections.forEach(section => {
+            let hasTableCap = ('toc_cap' in section);
+            let hasNestedSections = ('sections' in section);
+            let div = document.createElement('div');
+            div.classList.add(`level${deep}`);
 
-            if (deep === 1) { 
-                let level2Divs = nestedDiv.querySelectorAll('div.level2');
-                if (level2Divs.length > 2) {
-                    addArrowToDiv(div);
-                }
-                level2Divs.forEach(level2 => {
-                    let level3Divs = level2.querySelectorAll('div.level3');
-                    if (level3Divs.length > 2) {
-                        addArrowToDiv(level2);
-                    }
-                });
+            if (hasTableCap) {
+                let container = document.createElement('div');
+                container.style.display = 'flex';
+                container.style.alignItems = 'center';
+
+                let a = document.createElement('a');
+                a.innerHTML = section.toc_cap;
+                a.href = `#${section.sect_id}`;
+                a.classList.add('anchor');
+                a.setAttribute('id', `menu_${section.sect_id}`);
+                container.appendChild(a);
+                div.appendChild(container);
             }
 
-            div.appendChild(nestedDiv);
-        }
+            if (hasNestedSections) {
+                let nestedDiv = document.createElement('div');
+                nestedDiv.className = 'nested-sections hidden';
+                this.buildPageContent(section, nestedDiv, deep + 1);
 
-        parentNode.appendChild(div);
-    });
+                // TODO: Переписать код ниже на красивую рекурсию взамен двух вложенных циклов
+                if (deep === 1) {
+                    let level2Divs = nestedDiv.querySelectorAll('div.level2');
+                    if (level2Divs.length) {
+                        addArrowToDiv(div);
+                    }
+                    level2Divs.forEach(level2 => {
+                        let level3Divs = level2.querySelectorAll('div.level3');
+                        if (level3Divs.length) {
+                            addArrowToDiv(level2);
+                        }
+                    });
+                }
 
-    /** Adding the "chapter" class to links */
-    let allLinks = parentNode.querySelectorAll('div[class^="level"] a');
-    allLinks.forEach(link => {
-        let parentDiv = link.closest('div');
-        if (parentDiv) {
-            parentDiv.classList.add('chapter');
-        }
-    });
-    return parentNode;
+                div.appendChild(nestedDiv);
+            }
+
+            parentNode.appendChild(div);
+        });
+
+        /** Adding the "chapter" class to links */
+        let allLinks = parentNode.querySelectorAll('div[class^="level"] a');
+        allLinks.forEach(link => {
+            let parentDiv = link.closest('div');
+            if (parentDiv) {
+                parentDiv.classList.add('chapter');
+            }
+        });
+        return parentNode;
     }
 
     /** Create a logo */
