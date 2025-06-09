@@ -76,11 +76,18 @@ tr {
     cursor: pointer;
 }
 
+title {
+    display: flex;
+    align-items: center;
+    cursor: pointer; /* курсор для клика по заголовку */
+}
+
 .arrow {
     cursor: pointer;
     margin-right: 5px;
     transition: transform 0.3s ease;
     display: inline-block;
+
 }
 
 .arrow.up {
@@ -168,6 +175,7 @@ tr {
 .chapter {
     position: relative;
     display: flex;
+    align-items: center;
     justify-content: space-between;
 }
 

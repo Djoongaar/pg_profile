@@ -2,80 +2,84 @@
  * Class
  */
 class Menu {
+    /** Creates content with arrows */
     static buildNavigator(section, deep) {
         let hasNestedSections = ('sections' in section);
         let hasTableCap = ('toc_cap' in section);
         let navigator = document.getElementById('sections');
-
+        /** Creating the main container for the current section */
         let div = document.createElement('div');
 
-        if (hasTableCap) {
-
+        /** If the section is missing a subsection */
+        if (!hasTableCap) {
+            return null;
+        } else {
+            /** Creating a section header */
             let title = document.createElement('div');
-            title.style.display = 'flex';
-            title.style.alignItems = 'center';
-
+            /** Creating a link for the title */
             let a = document.createElement('a');
             a.innerHTML = section.toc_cap;
             a.href = `#${section.sect_id}`;
             a.classList.add('anchor');
             a.setAttribute('id', `menu_${section.sect_id}`);
             title.appendChild(a);
+
             div.appendChild(title);
-            navigator.appendChild(div);
-            console.log(section.toc_cap, deep);
-        }
-
-        if (!hasNestedSections) {
+            /** Setting the nesting level for styles */
             div.classList.add(`level${deep}`);
-        } else {
-            deep++;
-            section.sections.forEach(nestedSection => {
-                Menu.buildNavigator(nestedSection, deep);
-            })
-            deep--;
-        }
-    }
 
-    /** implementation of dynamic page content construction */
-    static buildPageContent(data, parentNode, deep = 1) {
+            /** If there are no nested sections */
+            if (!hasNestedSections) {
+                navigator.appendChild(div);
+            } else {
+                /** Creating a container for nested sections */
+                let nestedDiv = document.createElement('div');
+                nestedDiv.classList.add('nested-sections', 'hidden');
 
-        /** Click handler for content */
-        document.getElementById('pageContent').addEventListener('click', (e) => {
-            let link = e.target.closest('a');
-            if (link && link.closest('div[class^="level"]')) {
-                e.preventDefault();
-                let targetId = link.getAttribute('href').substring(1);
-                let targetSection = document.getElementById(targetId);
-                if (targetSection) {
-                    targetSection.scrollIntoView({behavior: 'smooth'});
-                }
-                localStorage.setItem('lastSectId', targetId);
-            }
-        });
+                let hasNestedContent = false;
 
-        /** Inserting an arrow for the content */
-        function addArrowToDiv(div) {
-            if (div.querySelector('.arrow')) return;
-            const arrowHTML = `
+                /** Processing of each nested section */
+                section.sections.forEach(nestedSection => {
+                    let nestedSectionDiv = Menu.buildNavigator(nestedSection, deep + 1);
+                    if (nestedSectionDiv) {
+                        /** Adding a nested section */
+                        nestedDiv.appendChild(nestedSectionDiv); 
+                        hasNestedContent = true;
+                    }
+                });
+
+                const arrowHTML = `
                 <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
                 </svg>`;
-            let container = div.querySelector('div:first-child') || div;
-            container.insertAdjacentHTML('beforeend', arrowHTML);
-            let arrow = container.querySelector('.arrow');
-            /** Click on the entire block */
-            container.addEventListener('click', () => {
-                let nestedDiv = div.querySelector('.nested-sections');
-                if (nestedDiv) {
-                    nestedDiv.classList.toggle('hidden');
-                    if (arrow) {
-                        /** Turn the arrow */
-                        arrow.classList.toggle('up');
-                    }
+
+                if (hasNestedContent) {
+                    title.insertAdjacentHTML('beforeend', arrowHTML);
+                    let arrowSvg = title.querySelector('.arrow');
+
+                    /** Adding a container of nested sections after the parent */
+                    div.appendChild(nestedDiv);
+                    /** Adding the main container to the navigator */
+                    navigator.appendChild(div);
+
+                    /** A header click handler for switching the visibility of nested sections */
+                    title.addEventListener('click', () => {
+                        nestedDiv.classList.toggle('hidden');
+                        arrowSvg.classList.toggle('up');
+                    });
+                } else {
+                    /** If there are no nested sections, just add the current section. */
+                    navigator.appendChild(div);
                 }
-            });
+            }
+
+            return div;
         }
+    }
+
+
+    /** implementation of dynamic page content construction */
+    static buildPageContent(data, parentNode, deep = 1) {
 
         /** Drawing Navigation */
         let initialDeep = 1;
