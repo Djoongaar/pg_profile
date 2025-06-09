@@ -214,21 +214,26 @@ class Menu {
             const height = 0;
             const element = document.elementFromPoint(width, height);
             if (!element) return;
-            let targetHeader = element.closest('h3[id], p[id]');
-            if (!targetHeader) {
-                let table = element.closest('table');
-                if (table) {
-                    targetHeader = table.parentNode.firstChild;
-                } else {
-                    return;
+
+            /** Detecting section id */
+            let sectId;
+            let targetHeader = element.closest('h3, p, table');
+            if (targetHeader) {
+                if (targetHeader.tagName === 'H3') {
+                    sectId = targetHeader.getAttribute('id');
+                } else if (targetHeader.tagName === 'P') {
+                    sectId = targetHeader.getAttribute('id');
+                } else if (targetHeader.tagName === 'TABLE') {
+                    sectId = targetHeader.parentNode.firstChild.getAttribute('id');
                 }
             }
-            let sectId = targetHeader.getAttribute('id');
             if (!sectId) return;
-            let chapterBlock = document.querySelectorAll('.chapter a');
+
             /** Removing the 'activeSection' from everyone */
             document.querySelectorAll('.chapter.activeSection').forEach(ch => ch.classList.remove('activeSection'));
+
             /** We are looking for a link that matches the id */
+            let chapterBlock = document.querySelectorAll('.chapter a');
             for (let link of chapterBlock) {
                 const href = link.getAttribute('href');
                 if (!href || !href.startsWith('#')) continue;
