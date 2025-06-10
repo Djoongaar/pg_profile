@@ -168,18 +168,4 @@ class Utilities {
             Utilities.searchWithParam(rowsForSearch, keyword, searchParam);
         }
     }
-
-    static hasNestedSections(section) {
-        if ('sections' in section) {
-            section.sections.forEach(
-                sect => {
-                    if (!sect.tbl_cap) {
-                        console.log('False');
-                        return false;
-                    }
-                }
-            )
-        }
-        return true;
-    }
 }
