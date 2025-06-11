@@ -5,15 +5,14 @@ class Menu {
     /** Creates content with arrows */
     static buildNavigator(section, deep) {
         let hasNestedSections = ('sections' in section);
-        let hasTableCap = ('toc_cap' in section);
+        let hasTocCap = ('toc_cap' in section);
         let navigator = document.getElementById('sections');
         /** Creating the main container for the current section */
         let div = document.createElement('div');
+        div.classList.add(`level${deep}`);
 
         /** If the section is missing a subsection */
-        if (!hasTableCap) {
-            return null;
-        } else {
+        if (hasTocCap) {
             /** Creating a section header */
             let title = document.createElement('div');
             /** Creating a link for the title */
@@ -22,11 +21,9 @@ class Menu {
             a.href = `#${section.sect_id}`;
             a.classList.add('anchor');
             a.setAttribute('id', `menu_${section.sect_id}`);
+            /** Building tag div */
             title.appendChild(a);
-
             div.appendChild(title);
-            /** Setting the nesting level for styles */
-            div.classList.add(`level${deep}`);
 
             /** If there are no nested sections */
             if (!hasNestedSections) {
@@ -49,9 +46,9 @@ class Menu {
                 });
 
                 const arrowHTML = `
-                <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
-                </svg>`;
+                    <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
+                    </svg>`;
 
                 if (hasNestedContent) {
                     title.insertAdjacentHTML('beforeend', arrowHTML);
@@ -72,7 +69,6 @@ class Menu {
                     navigator.appendChild(div);
                 }
             }
-
             return div;
         }
     }

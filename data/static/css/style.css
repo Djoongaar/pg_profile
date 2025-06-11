@@ -79,7 +79,7 @@ tr {
 title {
     display: flex;
     align-items: center;
-    cursor: pointer; /* курсор для клика по заголовку */
+    cursor: pointer;
 }
 
 .arrow {
@@ -87,7 +87,6 @@ title {
     margin-right: 5px;
     transition: transform 0.3s ease;
     display: inline-block;
-
 }
 
 .arrow.up {
@@ -102,7 +101,7 @@ title {
     border: none; 
     outline: none; 
     background: none; 
-    padding: 8px; 
+    padding: 8px;
     font-family: var(--main-font-family);
 }
 
