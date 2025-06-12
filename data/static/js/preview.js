@@ -54,9 +54,8 @@ class Previewer {
         button.setAttribute('title', 'Copy to clipboard');
 
         let svg = `
-            <svg height="14px" width="12px" style="margin-left: 10px;">
-                <rect x="2" y="2" height="12px" width="10px" rx="4" stroke="grey" fill="transparent"></rect>
-                <rect x="0" y="0" height="12px" width="10px" rx="4" stroke="grey" fill="transparent"></rect>
+            <svg width="14" height="14" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C5.79086 0 4 1.79086 4 4V10C4 12.2091 5.79086 14 8 14H14C16.2091 14 18 12.2091 18 10V4C18 1.79086 16.2091 0 14 0H8ZM6 4C6 2.89543 6.89543 2 8 2H14C15.1046 2 16 2.89543 16 4V10C16 11.1046 15.1046 12 14 12H8C6.89543 12 6 11.1046 6 10V4ZM0 7C0 5.69378 0.834808 4.58254 2 4.17071V14C2 15.1046 2.89543 16 4 16H13.8293C13.4175 17.1652 12.3062 18 11 18H3C1.34315 18 0 16.6569 0 15V7Z" fill="#14B0FF"/>
             </svg>
         `
 
@@ -91,6 +90,11 @@ class Previewer {
             }
 
             parentRow.addEventListener("click", event => {
+                /** Ignoring the click on the copy button "CopyButton" */
+                if (event.target.closest('.copyButton')) {
+                    return;
+                }
+
                 if (parentRow.classList.contains('int1')) {
                     previewRow = parentRow.nextSibling.nextSibling;
                     previewCell = previewRow.firstChild;
@@ -109,13 +113,15 @@ class Previewer {
                                 Previewer.queryTextPreviewer(previewCell, previewRow, parentRow, queryText);
 
                                 /** Copy query text into clipboard button */
-                                let copyQueryTextButton = Previewer.drawCopyButton();
-                                copyQueryTextButton.setAttribute("class", "copyQueryTextButton");
-                                previewCell.appendChild(copyQueryTextButton);
-
-                                copyQueryTextButton.addEventListener("click", event => {
+                                let existingButton = previewCell.querySelector(".copyQueryTextButton");
+                                if (!existingButton) {
+                                    let copyQueryTextButton = Previewer.drawCopyButton();
+                                    copyQueryTextButton.setAttribute("class", "copyQueryTextButton");
+                                    previewCell.appendChild(copyQueryTextButton);
+                                    copyQueryTextButton.addEventListener("click", event => {
                                     navigator.clipboard.writeText(queryText).then(r => console.log(queryText));
-                                });
+                                    });
+                                }
                             }
                         };
 

@@ -29,11 +29,34 @@ div h3 {
 
 div p {
     font-family: var(--main-font-family);
-    font-size: 17px;
+    font-size: 15px;
+}
+
+.copyButton {
+    padding-right: 5px;
+}
+
+.copyQueryTextButton {
+    padding: 3px 7px 3px 3px;
+}
+
+td p {
+    display: flex;
+}
+
+td p:nth-of-type(2) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 p i {
     font-size: 13px;
+}
+
+p a {
+    text-decoration: none;
+    color: #059FF5;
 }
 
 td {
@@ -326,7 +349,7 @@ div.notice {
 }
 
 svg rect:hover, svg circle:hover, svg:not(#logo, #logoMini) path:hover, a.copyButton svg:hover > rect {
-    stroke: limegreen;
+    stroke: #059FF5;
     cursor: pointer;
     fill: #D9FFCC;
 }
@@ -372,8 +395,12 @@ table tr.previewRow p, table tr.planRow p {
     width: 95%;
 }
 
-table tr.previewRow a, table tr.planRow a {
+table tr.planRow a {
     float: right;
+}
+
+table tr.previewRow a {
+    float: left;
 }
 
 table tr td.queryText {

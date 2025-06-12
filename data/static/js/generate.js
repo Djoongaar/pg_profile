@@ -237,7 +237,6 @@ class BaseTable extends BaseSection {
         let a1 = document.createElement('a');
         a1.href = `#${row.hexqueryid}`;
         a1.innerHTML = row.hexqueryid;
-        p1.appendChild(a1);
 
         /** Tag with md5 of (userid::text || datid::text || queryid::text) */
         let p2 = document.createElement('p');
@@ -263,6 +262,7 @@ class BaseTable extends BaseSection {
         
         button.classList.add('copyQueryId');
         p1.appendChild(button);
+        p1.appendChild(a1);
 
         return !!row.hexqueryid;
     }
