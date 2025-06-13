@@ -133,7 +133,7 @@ class Menu {
 
     /** Creating an input and selection field */
     static createSearchAndDropdown() {
-        const body = document.querySelector('body');
+        let body = document.querySelector('body');
         let container = document.createElement('div');
         container.id = 'searchDropdownContainer';
         /** A block is being created for the search field and its buttons*/
@@ -153,15 +153,15 @@ class Menu {
         /** Inserting SVG into the search field */
         searchButton.innerHTML = `
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g clip-path="url(#clip0_371_5886)">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M7 14C10.866 14 14 10.866 14 7C14 3.13401 10.866 0 7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14ZM7 12C9.76142 12 12 9.76142 12 7C12 4.23858 9.76142 2 7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12ZM14 12.5858L15.7071 14.2929L14.2929 15.7071L12.5858 14L14 12.5858ZM6.24974 6.33882C6.43444 6.12956 6.70147 6 7 6V4C6.10384 4 5.2985 4.3942 4.75026 5.01535L6.24974 6.33882Z" fill="#14B0FF"/>
-        </g>
-        <defs>
-            <clipPath id="clip0_371_5886">
-                <rect width="16" height="16" fill="white"/>
-            </clipPath>
-        </defs>
-    </svg>`;
+                <g clip-path="url(#clip0_371_5886)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7 14C10.866 14 14 10.866 14 7C14 3.13401 10.866 0 7 0C3.13401 0 0 3.13401 0 7C0 10.866 3.13401 14 7 14ZM7 12C9.76142 12 12 9.76142 12 7C12 4.23858 9.76142 2 7 2C4.23858 2 2 4.23858 2 7C2 9.76142 4.23858 12 7 12ZM14 12.5858L15.7071 14.2929L14.2929 15.7071L12.5858 14L14 12.5858ZM6.24974 6.33882C6.43444 6.12956 6.70147 6 7 6V4C6.10384 4 5.2985 4.3942 4.75026 5.01535L6.24974 6.33882Z" fill="#14B0FF"/>
+                </g>
+                <defs>
+                    <clipPath id="clip0_371_5886">
+                        <rect width="16" height="16" fill="white"/>
+                    </clipPath>
+                </defs>
+            </svg>`;
         searchWrapper.appendChild(input);
         searchWrapper.appendChild(searchButton);
 
@@ -183,8 +183,9 @@ class Menu {
         });
 
         /** Insert the svg arrow into the drop-down list box */
-        const arrowBlue = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
+        const arrowBlue = `
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
             </svg>`;
 
         let DropDownArrow = encodeURIComponent(arrowBlue);
@@ -250,44 +251,68 @@ class Menu {
         let menu = document.getElementById('pageContent');
         let logo = document.getElementById('logo');
         let logoMini = document.getElementById('logoMini');
-        let container = document.getElementById('container');
-
+        let maincontainer = document.getElementById('container');
         let searchDropdownContainer = document.getElementById('searchDropdownContainer');
-        let initPageContentWidth = document.getElementById('pageContent').offsetWidth;
-        /** Setting the initial position and width */
-        container.style.left = `${initPageContentWidth}px`;
-        menu.style.width = `${initPageContentWidth - 40}px`;
-        let newOffsetWidth = 35;
-        /** Expand the menu */
+
+        /** Declaring sizes and margins */
+        let paddingHorizontal = 40;
+        let minMenuWidthPx = 100;
+        let collapsedWidthPx = 35;
+
+        /** Calculating the width of the menu when expanding. */
+        function getExpandedWidthPx() {
+            let maxWidthVw = 19;
+            let widthFromVw = window.innerWidth * maxWidthVw / 100;
+            return Math.max(widthFromVw, minMenuWidthPx + paddingHorizontal);
+        }
+
+        /** Switching to Logo mode */
+        function expandMenu() {
+            let totalWidth = getExpandedWidthPx();
+            menu.style.width = (totalWidth - paddingHorizontal) + 'px';
+            maincontainer.style.left = totalWidth + 'px';
+            menu.classList.remove('hidden');
+
+            logo.classList.remove('hidden');
+            logoMini.classList.add('hidden');
+            searchDropdownContainer.classList.remove('hidden');
+        }
+
+        /** Switching to LogoMini mode */
+        function collapseMenu() {
+            menu.style.width = collapsedWidthPx + 'px';
+            maincontainer.style.left = (collapsedWidthPx + paddingHorizontal) + 'px';
+            menu.classList.add('hidden');
+
+            logo.classList.add('hidden');
+            logoMini.classList.remove('hidden');
+            searchDropdownContainer.classList.add('hidden');
+        }
+
+        /** sets the initial state of the menu when calling the method. */
+        if (menu.classList.contains('hidden')) {
+            collapseMenu();
+        } else {
+            expandMenu();
+        }
+
+        /** Logo Click Handlers */
         [logo, logoMini].forEach(elem =>
-            elem.addEventListener('click', function () {
-
+            elem.addEventListener('click', () => {
                 if (menu.classList.contains('hidden')) {
-                    /** Expand the menu */
-                    menu.style.width = `${initPageContentWidth - 40}px`;
-                    container.style.left = `${initPageContentWidth}px`;
-                    menu.classList.remove('hidden');
-
-                    logo.classList.remove('hidden');
-                    logoMini.classList.add('hidden');
-
-                    /* Show searchMenu on click on Logo */
-                    searchDropdownContainer.classList.remove('hidden');
-
+                    expandMenu();
                 } else {
-                    /** Minimizing the menu */
-                    menu.style.width = `${newOffsetWidth}px`;
-                    container.style.left = `${newOffsetWidth + 40}px`;
-                    menu.classList.add('hidden');
-
-                    logo.classList.add('hidden');
-                    logoMini.classList.remove('hidden');
-
-                    /* Hide searchMenu on click on Logo */
-                    searchDropdownContainer.classList.add('hidden');
+                    collapseMenu();
                 }
             })
-        )
+        );
+
+        /** When you change the window size, if the menu is open, it automatically changes to the new window size. */
+        window.addEventListener('resize', () => {
+            if (!menu.classList.contains('hidden')) {
+                expandMenu();
+            }
+        });
     }
 
     static init() {

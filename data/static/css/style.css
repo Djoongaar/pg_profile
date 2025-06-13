@@ -24,12 +24,12 @@ html {
 div h3 {
     scroll-margin-top: 60px;
     font-family: var(--main-font-family);
-    font-size: 22px;
+    font-size: clamp(16px, 2vw, 22px);
 }
 
 div p {
     font-family: var(--main-font-family);
-    font-size: 15px;
+    font-size: clamp(13px, 1.5vw, 18px);
 }
 
 .copyButton {
@@ -42,6 +42,7 @@ div p {
 
 td p {
     display: flex;
+    font-size: clamp(12px, 1.2vw, 18px);
 }
 
 td p:nth-of-type(2) {
@@ -51,7 +52,7 @@ td p:nth-of-type(2) {
 }
 
 p i {
-    font-size: 13px;
+    font-size: clamp(10px, 1vw, 13px);
 }
 
 p a {
@@ -78,12 +79,14 @@ tr {
 #logo, #logoMini {
     display: block;
     margin-top: 1em;
-    margin-bottom: 1ex;
+    margin-bottom: 1.7vh;
 }
 
 #logo {
-  width: 150px;
-  height: 50px;
+  width: 11vw;
+  height: 3vw;
+  min-width: 105px; 
+  min-height: 50px;
 }
 
 #logoMini {
@@ -110,6 +113,10 @@ title {
     margin-right: 5px;
     transition: transform 0.3s ease;
     display: inline-block;
+    width: 1.1vw;
+    height: 1.1vw;
+    min-width: 11px; 
+    min-height: 11px;
 }
 
 .arrow.up {
@@ -126,6 +133,7 @@ title {
     background: none; 
     padding: 8px;
     font-family: var(--main-font-family);
+    font-size: 2vh;
 }
 
 #searchButton {
@@ -140,6 +148,11 @@ title {
     background-position: right 5px center;
     background-size: 16px 16px;
     vertical-align: middle;
+}
+
+#searchButton svg {
+    width: 2vh;
+    height: 2vh;
 }
 
 #searchWrap {
@@ -159,6 +172,11 @@ title {
     outline: none;
     border: 1px solid #8898AE;
     font-family: var(--main-font-family);
+    font-size: 2vh;
+}
+
+#pageContent.hidden {
+    min-width: 35px;
 }
 
 #pageContent {
@@ -167,11 +185,11 @@ title {
     background-color: #F4F7FA;
     left: 0;
     top: 0;
-    max-width: 17%;
+    max-width: 19vw;
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    font-size: 15px;
+    font-size: clamp(12px, 1.1vw, 18px);
     opacity: 1;
     padding-left: 20px;
     padding-right: 20px;
@@ -191,7 +209,7 @@ title {
 }
 
 #sections {
-    padding-top: 1em;
+    padding-top: 2vh;
 }
 
 .chapter {
@@ -260,13 +278,14 @@ table tr.header {
     color: #FFFFFF;
     font-size: var(--main-font-size);
     font-family: var(--main-font-family);
-    background-color: #8898AE;
+    background-color: #647d9a;
 }
 
 table, th, td {
     border: 1px solid #B5C2D247;
     border-collapse: collapse;
     padding: 4px;
+    font-size: clamp(11px, 1.1vw, 18px);
 }
 
 table tr td.table_obj_value, table tr td.table_obj_name {
