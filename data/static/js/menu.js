@@ -206,10 +206,10 @@ class Menu {
 
     /** Track the scroll position and highlight the relevant sections in the menu */
     static navigateBorder() {
-        document.addEventListener('scroll', () => {
-            const width = document.getElementById('pageContent').offsetWidth + 30;
-            const height = 0;
-            const element = document.elementFromPoint(width, height);
+        function updateHighlight() {
+            let width = document.getElementById('pageContent').offsetWidth + 30;
+            let height = 0;
+            let element = document.elementFromPoint(width, height);
             if (!element) return;
 
             /** Detecting section id */
@@ -229,21 +229,53 @@ class Menu {
             /** Removing the 'activeSection' from everyone */
             document.querySelectorAll('.chapter.activeSection').forEach(ch => ch.classList.remove('activeSection'));
 
-            /** We are looking for a link that matches the id */
-            let chapterBlock = document.querySelectorAll('.chapter a');
-            for (let link of chapterBlock) {
-                const href = link.getAttribute('href');
-                if (!href || !href.startsWith('#')) continue;
-                const hrefId = href.substring(1);
-                if (hrefId === sectId) {
-                    let chapterDiv = link.closest('.chapter');
-                    if (chapterDiv) {
-                        chapterDiv.classList.add('activeSection');
-                        break;
-                    }
+            /** We are looking for a link corresponding to the current ID. */
+            let targetLink = document.querySelector(`.chapter a[href="#${sectId}"]`);
+            if (!targetLink) return;
+
+            let currentChapter = targetLink.closest('.chapter');
+            if (!currentChapter) return;
+
+            /** Search for parent sections at different levels */
+            let parentLevel1 = currentChapter.closest('.level1');
+            let parentLevel2 = currentChapter.closest('.level2');
+            
+            /** Check nested sections at different levels */
+            let nestedSectionsLevel1 = parentLevel1?.querySelector('.nested-sections');
+            let nestedSectionsLevel2 = parentLevel2?.querySelector('.nested-sections');
+
+            if (!nestedSectionsLevel1?.classList.contains('hidden')) {
+                if (nestedSectionsLevel2?.classList.contains('hidden')) {
+                    let parentChapter = parentLevel2.querySelector('.chapter');
+                    parentChapter?.classList.add('activeSection');
+                } else {
+                    currentChapter.classList.add('activeSection');
                 }
+            } else {
+                let parentChapter = parentLevel1.querySelector('.chapter:not(.nested-sections .chapter)');
+                parentChapter?.classList.add('activeSection');
             }
+        };
+
+        /** Scroll Handler */
+        document.addEventListener('scroll', updateHighlight);
+
+        /** Enabling the class change monitor */
+        let observer = new MutationObserver((mutations) => {
+            mutations.forEach(mutation => {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    updateHighlight();
+                }
+            });
         });
+
+        /** Launching surveillance */
+        document.querySelectorAll('.nested-sections').forEach(section => {
+            observer.observe(section, { attributes: true });
+        });
+
+        /** The first call to updateHighlight is to highlight when loading. */
+        updateHighlight();
     }
 
     /** Opening and closing menus on a page, and switching logos */
