@@ -85,7 +85,7 @@ tr {
 #logo {
   width: 11vw;
   height: 3vw;
-  min-width: 105px; 
+  min-width: 105px;
   min-height: 50px;
 }
 
@@ -115,7 +115,7 @@ title {
     display: inline-block;
     width: 1.1vw;
     height: 1.1vw;
-    min-width: 11px; 
+    min-width: 11px;
     min-height: 11px;
 }
 
@@ -126,22 +126,21 @@ title {
 #searchField {
     width: 100%;
     appearance: none;
-    -webkit-appearance: none; 
-    -moz-appearance: none; 
-    border: none; 
-    outline: none; 
-    background: none; 
-    padding: 8px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    outline: none;
+    background: none;
     font-family: var(--main-font-family);
-    font-size: 2vh;
+    font-size: clamp(10px, 1vw, 13px);
 }
 
 #searchButton {
     border: none;
     background: transparent;
     cursor: pointer;
-    appearance: none; 
-    -webkit-appearance: none; 
+    appearance: none;
+    -webkit-appearance: none;
     -moz-appearance: none;
     padding: 8px;
     background-repeat: no-repeat;
@@ -160,6 +159,11 @@ title {
     outline: none;
     border: 1px solid #8898AE;
     font-family: var(--main-font-family);
+    height: 35px;
+	box-sizing: border-box;
+	padding: 0 0 0 8px;
+	line-height: 35px;
+	display: flex;
 }
 
 #searchDropdownContainer.hidden {
@@ -172,7 +176,13 @@ title {
     outline: none;
     border: 1px solid #8898AE;
     font-family: var(--main-font-family);
-    font-size: 2vh;
+    font-size: clamp(10px, 1vw, 13px);
+    height: 35px;
+    box-sizing: border-box; 
+    padding: 0 0 0 9px; 
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
 }
 
 #pageContent.hidden {
@@ -199,13 +209,11 @@ title {
 
 #pageContent.hidden div.level1 {
     display: none;
-    
 }
 
 #pageContent div.level1 {
     font-weight: 600;
     cursor: pointer;
-    
 }
 
 #sections {
@@ -221,7 +229,7 @@ title {
 
 .chapter.activeSection {
     border-radius: 6px;
-    border: 1px solid #FFC83B; 
+    border: 1px solid #FFC83B;
 }
 
 #pageContent div.level2 {
@@ -250,9 +258,9 @@ title {
 select {
     margin-top: 8px;
     border: 0;
-    appearance: none; 
-    -webkit-appearance: none; 
-    -moz-appearance: none; 
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     padding-right: 20px;
     background: transparent;
     background-repeat: no-repeat;
@@ -367,9 +375,12 @@ div.notice {
     font-family: var(--main-font-family);
 }
 
-svg rect:hover, svg circle:hover, svg:not(#logo, #logoMini) path:hover, a.copyButton svg:hover > rect {
-    stroke: #059FF5;
+a svg:hover {
     cursor: pointer;
+}
+
+svg:not(#logo, #logoMini) rect:hover, svg circle:hover, svg:not(#logo, #logoMini) path:hover, a.copyButton svg:hover > rect {
+    stroke: #059FF5;
     fill: #D9FFCC;
 }
 
