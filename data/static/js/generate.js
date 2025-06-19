@@ -259,7 +259,7 @@ class BaseTable extends BaseSection {
         button.addEventListener("click", event => {
             navigator.clipboard.writeText(newRow.dataset.queryid).then(r => console.log(newRow.dataset.queryid))
         });
-        
+
         button.classList.add('copyQueryId');
         p1.appendChild(button);
         p1.appendChild(a1);
@@ -436,15 +436,22 @@ class BaseTable extends BaseSection {
      * @returns objects, {json[]}, array with json objects */
 
     static bifurcateObject(column) {
-    const keys = Object.keys(column);
-    return column.id.map((_, i) => {
-        const newObj = {};
-        keys.forEach(key => {
-            newObj[key] = typeof column[key] === 'object' ? column[key][i] : column[key];
-        });
-        return newObj;
-    });
-}
+
+        let objects = [];
+        let keys = Object.keys(column);
+
+        for (let i = 0; i < column.id.length; i++) {
+            let newObj = structuredClone(column);
+
+            for (let j = 0; j < keys.length; j++) {
+                if (typeof newObj[keys[j]] === 'object') {
+                    newObj[keys[j]] = column[keys[j]][i];
+                }
+            }
+            objects.push(newObj);
+        }
+        return objects;
+    }
 
     static getTagTitle(title) {
         const TITLES = {
@@ -781,9 +788,18 @@ class HorizontalTable extends BaseTable {
 class VerticalTable extends BaseTable {
 
     static getColumns(section) {
-    return section.header.rows.map(row =>
-        typeof row.id === 'object' ? BaseTable.bifurcateObject(row) : row
-    );
+
+        let columns = [];
+        let rows = section.header.rows;
+
+        for (let i = 0; i < rows.length; i++) {
+            if (typeof rows[i].id === 'object') {
+                columns.push(BaseTable.bifurcateObject(rows[i]));
+            } else {
+                columns.push(rows[i]);
+            }
+        }
+        return columns;
     }
 
     static buildCell(newRow, column, row, klass) {

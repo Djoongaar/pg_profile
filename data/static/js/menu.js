@@ -40,7 +40,7 @@ class Menu {
                     let nestedSectionDiv = Menu.buildNavigator(nestedSection, deep + 1);
                     if (nestedSectionDiv) {
                         /** Adding a nested section */
-                        nestedDiv.appendChild(nestedSectionDiv); 
+                        nestedDiv.appendChild(nestedSectionDiv);
                         hasNestedContent = true;
                     }
                 });
@@ -48,8 +48,7 @@ class Menu {
                 const arrowHTML = `
                     <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
-                    </svg>
-                `;
+                    </svg>`;
 
                 if (hasNestedContent) {
                     title.insertAdjacentHTML('beforeend', arrowHTML);
@@ -98,18 +97,11 @@ class Menu {
     /** Create a logo */
     static drawLogo() {
         let reportContent = document.getElementById('pageContent');
+        let logo = logoFile;
+        let logoMini = logoMiniFile;
 
-        let logo = document.createElement('img');
-        logo.setAttribute('id', 'logo');
-        logo.setAttribute('src', 'data/static/js/logo.svg')
-
-        let logoMini = document.createElement('img');
-        logoMini.setAttribute('id', 'logoMini');
-        logoMini.setAttribute('src', 'data/static/js/logo_mini.svg')
-        logoMini.setAttribute('class', 'hidden');
-
-        reportContent.insertAdjacentElement('afterbegin', logo);
-        reportContent.insertAdjacentElement('afterbegin', logoMini);
+        reportContent.insertAdjacentHTML('afterbegin', logo);
+        reportContent.insertAdjacentHTML('afterbegin', logoMini);
     }
 
     static buildMenu() {
@@ -162,8 +154,7 @@ class Menu {
                         <rect width="16" height="16" fill="white"/>
                     </clipPath>
                 </defs>
-            </svg>
-        `;
+            </svg>`;
         searchWrapper.appendChild(input);
         searchWrapper.appendChild(searchButton);
 
@@ -199,8 +190,8 @@ class Menu {
         const arrowBlue = `
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
-            </svg>
-        `;
+            </svg>`;
+
         let DropDownArrow = encodeURIComponent(arrowBlue);
         select.style.backgroundImage = `url("data:image/svg+xml;utf8,${DropDownArrow}")`;
 
@@ -252,7 +243,7 @@ class Menu {
             /** Search for parent sections at different levels */
             let parentLevel1 = currentChapter.closest('.level1');
             let parentLevel2 = currentChapter.closest('.level2');
-            
+
             /** Check nested sections at different levels */
             let nestedSectionsLevel1 = parentLevel1?.querySelector('.nested-sections');
             let nestedSectionsLevel2 = parentLevel2?.querySelector('.nested-sections');

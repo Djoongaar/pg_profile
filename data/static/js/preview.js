@@ -90,20 +90,20 @@ class Previewer {
             }
 
             parentRow.addEventListener("click", event => {
-                /** Ignoring the click on the copy button "CopyButton" */
-                if (event.target.closest('.copyButton')) {
-                    return;
-                }
-
                 if (parentRow.classList.contains('int1')) {
                     previewRow = parentRow.nextSibling.nextSibling;
                     previewCell = previewRow.firstChild;
                 }
 
                 /** Trigger event only if user clicked not on rect and link*/
-                if (event.target.tagName.toLowerCase() !== 'a' && event.target.tagName.toLowerCase() !== 'rect') {
+                if (
+                    event.target.tagName.toLowerCase() !== 'a' &&
+                    event.target.tagName.toLowerCase() !== 'rect' &&
+                    event.target.tagName.toLowerCase() !== 'svg' &&
+                    event.target.tagName.toLowerCase() !== 'path'
+                ) {
                     if (previewRow.style.display === 'none') {
-                        
+
                         /** Preview SQL query text */
                         if (sourceDatasetName === "queries" || sourceDatasetName === "act_queries") {
                             let queryIndex = Previewer.findQuery(previewRow);
@@ -113,17 +113,17 @@ class Previewer {
                                 Previewer.queryTextPreviewer(previewCell, previewRow, parentRow, queryText);
 
                                 /** Copy query text into clipboard button */
-                                let existingButton = previewCell.querySelector(".copyQueryTextButton");
-                                if (!existingButton) {
+                                if (!previewCell.querySelector('.copyQueryTextButton')) {
                                     let copyQueryTextButton = Previewer.drawCopyButton();
                                     copyQueryTextButton.setAttribute("class", "copyQueryTextButton");
                                     previewCell.appendChild(copyQueryTextButton);
+
                                     copyQueryTextButton.addEventListener("click", event => {
-                                    navigator.clipboard.writeText(queryText).then(r => console.log(queryText));
+                                        navigator.clipboard.writeText(queryText).then(r => console.log(queryText));
                                     });
                                 }
                             }
-                        };
+                        }
 
                         /** Preview Table storage parameters */
                         if (sourceDatasetName === "table_storage_parameters" || sourceDatasetName === "index_storage_parameters") {
