@@ -48,7 +48,8 @@ class Menu {
                 const arrowHTML = `
                     <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
-                    </svg>`;
+                    </svg>
+                `;
 
                 if (hasNestedContent) {
                     title.insertAdjacentHTML('beforeend', arrowHTML);
@@ -154,7 +155,8 @@ class Menu {
                         <rect width="16" height="16" fill="white"/>
                     </clipPath>
                 </defs>
-            </svg>`;
+            </svg>
+        `;
         searchWrapper.appendChild(input);
         searchWrapper.appendChild(searchButton);
 
@@ -165,7 +167,6 @@ class Menu {
         /** Adding options */
         let defaultOption = document.createElement('option');
         defaultOption.value = '';
-        defaultOption.style.fontStyle = 'italic';
         defaultOption.textContent = 'Choice';
         select.appendChild(defaultOption);
 
@@ -190,8 +191,8 @@ class Menu {
         const arrowBlue = `
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
-            </svg>`;
-
+            </svg>
+        `;
         let DropDownArrow = encodeURIComponent(arrowBlue);
         select.style.backgroundImage = `url("data:image/svg+xml;utf8,${DropDownArrow}")`;
 
@@ -214,50 +215,51 @@ class Menu {
             let width = document.getElementById('pageContent').offsetWidth + 30;
             let height = 0;
             let element = document.elementFromPoint(width, height);
-            if (!element) return;
 
-            /** Detecting section id */
-            let sectId;
-            let targetHeader = element.closest('h3, p, table');
-            if (targetHeader) {
-                if (targetHeader.tagName === 'H3') {
-                    sectId = targetHeader.getAttribute('id');
-                } else if (targetHeader.tagName === 'P') {
-                    sectId = targetHeader.getAttribute('id');
-                } else if (targetHeader.tagName === 'TABLE') {
-                    sectId = targetHeader.parentNode.firstChild.getAttribute('id');
+            if (element) {
+                /** Detecting section id */
+                let sectId;
+                let targetHeader = element.closest('h3, p, table');
+                if (targetHeader) {
+                    if (targetHeader.tagName === 'H3') {
+                        sectId = targetHeader.getAttribute('id');
+                    } else if (targetHeader.tagName === 'P') {
+                        sectId = targetHeader.getAttribute('id');
+                    } else if (targetHeader.tagName === 'TABLE') {
+                        sectId = targetHeader.parentNode.firstChild.getAttribute('id');
+                    }
                 }
-            }
-            if (!sectId) return;
+                
+                if (sectId) {
+                    /** Removing the 'activeSection' from everyone */
+                    document.querySelectorAll('.chapter.activeSection').forEach(ch => ch.classList.remove('activeSection'));
 
-            /** Removing the 'activeSection' from everyone */
-            document.querySelectorAll('.chapter.activeSection').forEach(ch => ch.classList.remove('activeSection'));
+                    /** We are looking for a link corresponding to the current ID. */
+                    let targetLink = document.querySelector(`.chapter a[href="#${sectId}"]`);
+                    let currentChapter = targetLink.closest('.chapter');
 
-            /** We are looking for a link corresponding to the current ID. */
-            let targetLink = document.querySelector(`.chapter a[href="#${sectId}"]`);
-            if (!targetLink) return;
+                    if (targetLink && currentChapter) {
+                        /** Search for parent sections at different levels */
+                        let parentLevel1 = currentChapter.closest('.level1');
+                        let parentLevel2 = currentChapter.closest('.level2');
 
-            let currentChapter = targetLink.closest('.chapter');
-            if (!currentChapter) return;
+                        /** Check nested sections at different levels */
+                        let nestedSectionsLevel1 = parentLevel1?.querySelector('.nested-sections');
+                        let nestedSectionsLevel2 = parentLevel2?.querySelector('.nested-sections');
 
-            /** Search for parent sections at different levels */
-            let parentLevel1 = currentChapter.closest('.level1');
-            let parentLevel2 = currentChapter.closest('.level2');
-
-            /** Check nested sections at different levels */
-            let nestedSectionsLevel1 = parentLevel1?.querySelector('.nested-sections');
-            let nestedSectionsLevel2 = parentLevel2?.querySelector('.nested-sections');
-
-            if (!nestedSectionsLevel1?.classList.contains('hidden')) {
-                if (nestedSectionsLevel2?.classList.contains('hidden')) {
-                    let parentChapter = parentLevel2.querySelector('.chapter');
-                    parentChapter?.classList.add('activeSection');
-                } else {
-                    currentChapter.classList.add('activeSection');
+                        if (!nestedSectionsLevel1?.classList.contains('hidden')) {
+                            if (nestedSectionsLevel2?.classList.contains('hidden')) {
+                                let parentChapter = parentLevel2.querySelector('.chapter');
+                                parentChapter?.classList.add('activeSection');
+                            } else {
+                                currentChapter.classList.add('activeSection');
+                            }
+                        } else {
+                            let parentChapter = parentLevel1.querySelector('.chapter:not(.nested-sections .chapter)');
+                            parentChapter?.classList.add('activeSection');
+                        }
+                    }
                 }
-            } else {
-                let parentChapter = parentLevel1.querySelector('.chapter:not(.nested-sections .chapter)');
-                parentChapter?.classList.add('activeSection');
             }
         };
 
@@ -328,13 +330,13 @@ class Menu {
 
         /** Logo Click Handlers */
         [logo, logoMini].forEach(elem =>
-            elem.addEventListener('click', () => {
+            elem.addEventListener('click', function() {
                 toggleMenuState(menu.classList.contains('hidden'));
             })
         );
 
         /** Window resize handler */
-        window.addEventListener('resize', () => {
+        window.addEventListener('resize', function() {
             if (!menu.classList.contains('hidden')) {
                 toggleMenuState(true);
             }
