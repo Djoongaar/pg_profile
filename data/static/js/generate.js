@@ -14,7 +14,7 @@ class BaseSection {
      */
     static buildTitle(section, deep) {
         let title = document.createElement('h3');
-        if (deep != 1) {
+        if (deep !== 1) {
             title = document.createElement('p');
         }
         
@@ -544,7 +544,7 @@ class BaseTable extends BaseSection {
                     return BaseTable.uniqueHeaders[klass](this.table, this.section.header);
                 }
             }
-        };
+        }
 
         /** Collecting header into matrix */
         let headerMatrix = BaseTable.collectHeader(this.section.header, 0, null);
@@ -688,7 +688,6 @@ class HorizontalTable extends BaseTable {
      * Setting data attributes to row for highlighting
      * @param newRow html tag with table row
      * @param row Object with data for populating html table
-     * @param dataAttrs Object with attr name for setting data-attrs in <tr> tag
      */
     static setDataAttrs(newRow, row) {
         /** Collecting search array */
@@ -702,7 +701,7 @@ class HorizontalTable extends BaseTable {
     }
 
     static setId(newRow, row, dataAttrs) {
-        let data = new Array();
+        let data = [];
 
         dataAttrs.forEach(item => {
             data.push(row[item]);

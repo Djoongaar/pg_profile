@@ -231,14 +231,14 @@ class Menu {
                 }
                 
                 if (sectId) {
-                    /** Removing the 'activeSection' from everyone */
-                    document.querySelectorAll('.chapter.activeSection').forEach(ch => ch.classList.remove('activeSection'));
-
                     /** We are looking for a link corresponding to the current ID. */
                     let targetLink = document.querySelector(`.chapter a[href="#${sectId}"]`);
-                    let currentChapter = targetLink.closest('.chapter');
+                    let currentChapter = targetLink?.closest('.chapter');
 
                     if (targetLink && currentChapter) {
+                        /** Removing the 'activeSection' from everyone */
+                        document.querySelectorAll('.chapter.activeSection').forEach(
+                            ch => ch.classList.remove('activeSection'));
                         /** Search for parent sections at different levels */
                         let parentLevel1 = currentChapter.closest('.level1');
                         let parentLevel2 = currentChapter.closest('.level2');
@@ -261,7 +261,7 @@ class Menu {
                     }
                 }
             }
-        };
+        }
 
         /** Scroll Handler */
         document.addEventListener('scroll', updateHighlight);
@@ -289,7 +289,7 @@ class Menu {
         let menu = document.getElementById('pageContent');
         let logo = document.getElementById('logo');
         let logoMini = document.getElementById('logoMini');
-        let maincontainer = document.getElementById('container');
+        let mainContainer = document.getElementById('container');
         let searchDropdownContainer = document.getElementById('searchDropdownContainer');
 
         /** Declaring sizes and margins */
@@ -310,14 +310,14 @@ class Menu {
             if (shouldExpand) {
                 const totalWidth = getExpandedWidthPx();
                 menu.style.width = (totalWidth - paddingHorizontal) + 'px';
-                maincontainer.style.left = totalWidth + 'px';
+                mainContainer.style.left = totalWidth + 'px';
                 menu.classList.remove('hidden');
                 logo.classList.remove('hidden');
                 logoMini.classList.add('hidden');
                 searchDropdownContainer.classList.remove('hidden');
             } else {
                 menu.style.width = collapsedWidthPx + 'px';
-                maincontainer.style.left = (collapsedWidthPx + paddingHorizontal) + 'px';
+                mainContainer.style.left = (collapsedWidthPx + paddingHorizontal) + 'px';
                 menu.classList.add('hidden');
                 logo.classList.add('hidden');
                 logoMini.classList.remove('hidden');
