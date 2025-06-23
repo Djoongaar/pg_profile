@@ -48,7 +48,8 @@ class Menu {
                 const arrowHTML = `
                     <svg viewBox="0 0 16 16" width="16" height="16" class="arrow">
                         <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#A6B5C7"/>
-                    </svg>`;
+                    </svg>
+                `;
 
                 if (hasNestedContent) {
                     title.insertAdjacentHTML('beforeend', arrowHTML);
@@ -121,7 +122,7 @@ class Menu {
         this.drawLogo();
 
         /** Draw Search */
-        // this.createSearchAndDropdown();
+        this.createSearchAndDropdown();
     }
 
     /** Creating an input and selection field */
@@ -154,7 +155,8 @@ class Menu {
                         <rect width="16" height="16" fill="white"/>
                     </clipPath>
                 </defs>
-            </svg>`;
+            </svg>
+        `;
         searchWrapper.appendChild(input);
         searchWrapper.appendChild(searchButton);
 
@@ -168,19 +170,29 @@ class Menu {
         defaultOption.textContent = 'Choice';
         select.appendChild(defaultOption);
 
-        ['1', '2'].forEach((text, index) => {
-            let option = document.createElement('option');
-            option.value = `option${index + 1}`;
-            option.textContent = text;
-            select.appendChild(option);
+        /** Adding options */
+        const options = [
+            { value: 'all', text: 'Everywhere' },
+            { value: 'dbname', text: 'Database' },
+            { value: 'username', text: 'User' },
+            { value: 'relname', text: 'Table' },
+            { value: 'indexrelname', text: 'Index' },
+            { value: 'querytext', text: 'Query' }
+        ];
+
+        options.forEach(option => {
+            let optElement = document.createElement('option');
+            optElement.value = option.value;
+            optElement.textContent = option.text;
+            select.appendChild(optElement);
         });
 
         /** Insert the svg arrow into the drop-down list box */
         const arrowBlue = `
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M4.9417 5.5L8 8.54753L11.0583 5.5L12.5 6.93662L8.72085 10.7025C8.32273 11.0992 7.67726 11.0992 7.27915 10.7025L3.5 6.93662L4.9417 5.5Z" fill="#14B0FF"/>
-            </svg>`;
-
+            </svg>
+        `;
         let DropDownArrow = encodeURIComponent(arrowBlue);
         select.style.backgroundImage = `url("data:image/svg+xml;utf8,${DropDownArrow}")`;
 
@@ -217,7 +229,7 @@ class Menu {
                         sectId = targetHeader.parentNode.firstChild.getAttribute('id');
                     }
                 }
-                
+
                 if (sectId) {
                     /** Removing the 'activeSection' from everyone */
                     document.querySelectorAll('.chapter.activeSection').forEach(ch => ch.classList.remove('activeSection'));
@@ -226,18 +238,18 @@ class Menu {
                     let currentChapter = targetLink?.closest('.chapter');
 
                     if (targetLink && currentChapter) {
-                        
+
                         /** A function for moving up the hierarchy and highlighting parent sections with hidden subsections */
                         function highlightParentSections(chapter) {
                             let parentContainer = chapter.closest('[class^="level"]');
                             while (parentContainer) {
                                 let parentChapter = parentContainer.querySelector('.chapter:first-child');
                                 let nestedSections = parentContainer.querySelector('.nested-sections');
-                                
+
                                 if (parentChapter && nestedSections && nestedSections.classList.contains('hidden')) {
                                     parentChapter.classList.add('activeSection');
                                 }
-                                
+
                                 parentContainer = parentContainer.parentElement.closest('[class^="level"]');
                             }
                         }
@@ -274,7 +286,7 @@ class Menu {
         let menu = document.getElementById('pageContent');
         let logo = document.getElementById('logo');
         let logoMini = document.getElementById('logoMini');
-        let maincontainer = document.getElementById('container');
+        let mainContainer = document.getElementById('container');
         let searchDropdownContainer = document.getElementById('searchDropdownContainer');
 
         /** Declaring sizes and margins */
@@ -286,58 +298,44 @@ class Menu {
         function getExpandedWidthPx() {
             let maxWidthVw = 19;
             let widthFromVw = window.innerWidth * maxWidthVw / 100;
+            /** protection against too narrow a menu when the browser window is greatly reduced */
             return Math.max(widthFromVw, minMenuWidthPx + paddingHorizontal);
         }
 
-        /** Switching to Logo mode */
-        function expandMenu() {
-            let totalWidth = getExpandedWidthPx();
-            menu.style.width = (totalWidth - paddingHorizontal) + 'px';
-            maincontainer.style.left = totalWidth + 'px';
-            menu.classList.remove('hidden');
-
-            logo.classList.remove('hidden');
-            logoMini.classList.add('hidden');
-            if (searchDropdownContainer) {
+        /** Unified menu toggle function */
+        function toggleMenuState(shouldExpand) {
+            if (shouldExpand) {
+                const totalWidth = getExpandedWidthPx();
+                menu.style.width = (totalWidth - paddingHorizontal) + 'px';
+                mainContainer.style.left = totalWidth + 'px';
+                menu.classList.remove('hidden');
+                logo.classList.remove('hidden');
+                logoMini.classList.add('hidden');
                 searchDropdownContainer.classList.remove('hidden');
-            }
-        }
-
-        /** Switching to LogoMini mode */
-        function collapseMenu() {
-            menu.style.width = collapsedWidthPx + 'px';
-            maincontainer.style.left = (collapsedWidthPx + paddingHorizontal) + 'px';
-            menu.classList.add('hidden');
-
-            logo.classList.add('hidden');
-            logoMini.classList.remove('hidden');
-            if (searchDropdownContainer) {
+            } else {
+                menu.style.width = collapsedWidthPx + 'px';
+                mainContainer.style.left = (collapsedWidthPx + paddingHorizontal) + 'px';
+                menu.classList.add('hidden');
+                logo.classList.add('hidden');
+                logoMini.classList.remove('hidden');
                 searchDropdownContainer.classList.add('hidden');
             }
         }
 
-        /** sets the initial state of the menu when calling the method. */
-        if (menu.classList.contains('hidden')) {
-            collapseMenu();
-        } else {
-            expandMenu();
-        }
+        /** Set initial state */
+        toggleMenuState(!menu.classList.contains('hidden'));
 
         /** Logo Click Handlers */
         [logo, logoMini].forEach(elem =>
-            elem.addEventListener('click', () => {
-                if (menu.classList.contains('hidden')) {
-                    expandMenu();
-                } else {
-                    collapseMenu();
-                }
+            elem.addEventListener('click', function() {
+                toggleMenuState(menu.classList.contains('hidden'));
             })
         );
 
-        /** When you change the window size, if the menu is open, it automatically changes to the new window size. */
-        window.addEventListener('resize', () => {
+        /** Window resize handler */
+        window.addEventListener('resize', function() {
             if (!menu.classList.contains('hidden')) {
-                expandMenu();
+                toggleMenuState(true);
             }
         });
     }
