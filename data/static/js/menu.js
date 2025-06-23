@@ -61,7 +61,7 @@ class Menu {
                     navigator.appendChild(div);
 
                     /** A header click handler for switching the visibility of nested sections */
-                    title.addEventListener('click', () => {
+                    arrowSvg.addEventListener('click', () => {
                         nestedDiv.classList.toggle('hidden');
                         arrowSvg.classList.toggle('up');
                     });
