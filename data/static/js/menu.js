@@ -246,7 +246,7 @@ class Menu {
                     }
                 }
             }
-        };
+        }
 
         /** Scroll Handler */
         document.addEventListener('scroll', updateHighlight);
