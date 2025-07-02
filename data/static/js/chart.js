@@ -216,7 +216,7 @@ class SessionChart extends BaseChart {
                 document.getElementById('thresholdStateField').childNodes[1].innerHTML = `State: ${thresholdStateValue}`;
 
                 mainNode.remove();
-                div.insertAdjacentElement('afterend', new SessionChart().init(newBlock, thresholdBackendValue, thresholdXactValue, thresholdStateValue))
+                div.insertAdjacentElement('afterend', new SessionChart().init(newBlock, thresholdBackendValue, thresholdXactValue, thresholdStateValue, currentReport))
             });
         })
         inputFieldsRanges.appendChild(thresholdBackendField);
@@ -230,16 +230,16 @@ class SessionChart extends BaseChart {
 
         return div;
     }
-
-    init(newBlock, threshold_backend=null, threshold_xact=null, threshold_state=null) {
+    
+    init(newBlock, threshold_backend=null, threshold_xact=null, threshold_state=null, reportData=null) {
         /** Create main HTML node*/
         let div = document.createElement('div');
         div.setAttribute('id', 'stateChangeSVG');
 
         /** Declaring variables */
         let stateChanging = {};
-        let reportStartUT = data.properties.report_start1_ut;
-        let reportEndUT = data.properties.report_end2_ut ? data.properties.report_end2_ut : data.properties.report_end1_ut;
+        let reportStartUT = reportData.properties.report_start1_ut;
+        let reportEndUT = reportData.properties.report_end2_ut ? reportData.properties.report_end2_ut : reportData.properties.report_end1_ut;
         let reportDuration = reportEndUT - reportStartUT;
         let totalSVGWidth = 1520;
         if (document.documentElement.offsetWidth) {

@@ -25,7 +25,7 @@ class Previewer {
 
         /** Query text preview */
         if (!previewCell.hasChildNodes()) {
-            let topn = data.properties.topn || 20;
+            let topn = currentReport.properties.topn || 20;
             previewData.slice(-topn).reverse().forEach(item => {
                 let preprocessedText = Utilities.preprocessQueryString(`${item['first_seen']}: ${item['reloptions']}`, 1000);
                 previewCell.insertAdjacentHTML('afterbegin', `<p><i>${preprocessedText}</i></p>`);
@@ -37,7 +37,7 @@ class Previewer {
         // datasetName, dataID, parentRow.dataset[dataID]
         let datasetName = queryRaw.dataset["dataset_name"];
         let dataID = queryRaw.dataset["dataset_col_id"];
-        let querySet = data.datasets[datasetName];
+        let querySet = currentReport.datasets[datasetName];
         let queryId = queryRaw.dataset["dataset_id"]
         
         for (let i = 0; i < querySet.length; i++) {
@@ -109,7 +109,7 @@ class Previewer {
                             let queryIndex = Previewer.findQuery(previewRow);
                             if (queryIndex >= 0) {
 
-                                let queryText = data.datasets[sourceDatasetName][queryIndex].query_texts[0];
+                                let queryText = currentReport.datasets[sourceDatasetName][queryIndex].query_texts[0];
                                 Previewer.queryTextPreviewer(previewCell, previewRow, parentRow, queryText);
 
                                 /** Copy query text into clipboard button */
@@ -127,7 +127,7 @@ class Previewer {
 
                         /** Preview Table storage parameters */
                         if (sourceDatasetName === "table_storage_parameters" || sourceDatasetName === "index_storage_parameters") {
-                            let sourceDataset = data.datasets[sourceDatasetName]; 
+                            let sourceDataset = currentReport.datasets[sourceDatasetName]; 
                             let targetDatasetValue = parentRow.dataset[sourceDatasetKey];
 
                             let previewData = Utilities.find(sourceDataset, sourceDatasetKey, targetDatasetValue);

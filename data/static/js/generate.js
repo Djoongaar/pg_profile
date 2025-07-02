@@ -104,7 +104,7 @@ class BaseSection {
                 } else if (newBlock.header.type === 'column_table') {
                     div.appendChild(new VerticalTable(newBlock, table).init());
                 } else if (newBlock.header.type === 'chart') {
-                    div.appendChild(SessionChart.initTreshold(newBlock));
+                    div.appendChild(SessionChart.initTreshold(newBlock, currentReport));
                     let sessionChart = new SessionChart();
                     div.appendChild(sessionChart.init(newBlock));
                     div.appendChild(sessionChart.drawSessionChartLegend());

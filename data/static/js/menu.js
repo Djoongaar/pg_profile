@@ -76,11 +76,11 @@ class Menu {
 
 
     /** implementation of dynamic page content construction */
-    static buildPageContent(data, parentNode, deep = 1) {
+    static buildPageContent(currentReport, parentNode, deep = 1) {
 
         /** Drawing Navigation */
         let initialDeep = 1;
-        data.sections.forEach(section => {
+        currentReport.sections.forEach(section => {
             Menu.buildNavigator(section, initialDeep);
         })
 
@@ -116,7 +116,7 @@ class Menu {
         `
         body.insertAdjacentHTML('afterbegin', pageContent);
         let sections = document.getElementById("sections");
-        Menu.buildPageContent(data, sections, 1);
+        Menu.buildPageContent(currentReport, sections, 1);
 
         /** Draw Logo */
         this.drawLogo();
