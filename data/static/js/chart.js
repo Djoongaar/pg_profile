@@ -20,21 +20,41 @@ class BaseChart {
 
 class PipeChart extends BaseChart {
     static drawSVG(orderedData, value, key) {
-        let x = 0; // Start position of nested svg
+        let x = 0; /** Start position of nested svg */
+        let MIN_TEXT_WIDTH = 15; /** Minimum width for displaying text */
 
         let nestedSvg = '';
 
         orderedData.forEach(elem => {
-            let width = Math.floor(elem[value]);
+            let width = (Math.floor(elem[value]) - 0.2);
+            let textContent = `${elem.objname}: ${elem[key]}`;
+
+            let lineColor;
+            if (elem[value] > 50) {
+                lineColor = "FF4C38"; /** >50% */
+            } else if (elem[value] > 25) {
+                lineColor = "FF9500"; /** >25% and <=50% */
+            } else if (elem[value] > 10) {
+                lineColor = "00B896"; /** >10% and <=25% */
+            } else {
+                lineColor = "8898AE"; /** <=10% */
+            }
+            
+            /** Check if there is enough space for the text */
+            let shouldShowText = width >= MIN_TEXT_WIDTH;
+            
             nestedSvg += `
                 <svg height="2em" width="${width}%" x="${x}%">
                     <title>${elem.objname}: ${elem[value]}</title>
-                    <rect height="90%" x="0%" y="10%" ry="15%" stroke="black" stroke-width="1px" width="100%" fill="#${elem.objcolor}"></rect>
-                    <text x="0.3em" y="70%">${elem.objname}: ${elem[key]}</text>
+                    <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#${lineColor}" stroke-width="5px"></line>
+                    ${shouldShowText ? 
+                        `<text x="0.1em" y="45%" dominant-baseline="middle" fill="#${lineColor}">${textContent}</text>` 
+                        : ''}
                 </svg>
             `;
-
-            x += width;
+            
+            x += width + 0.2; /** indented */
+            
         })
 
         let svg = `

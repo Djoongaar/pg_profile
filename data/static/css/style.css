@@ -279,6 +279,7 @@ select {
 
 table {
     margin-bottom: 10px;
+    font-family: var(--main-font-family);
 }
 
 table tr.header {
@@ -308,7 +309,9 @@ table tr td.table_obj_name {
 }
 
 table tr td.fullScreen {
-    width: 85%
+    width: 85%;
+    font-family: var(--main-font-family);
+    font-size: clamp(8px, 0.9vw, 12px);
 }
 
 table tr td.halfScreen {

@@ -312,6 +312,7 @@ class Menu {
         let logoMini = document.getElementById('logoMini');
         let mainContainer = document.getElementById('container');
         let searchDropdownContainer = document.getElementById('searchDropdownContainer');
+        let table = document.querySelectorAll('.pgprototals');
 
         /** Declaring sizes and margins */
         let paddingHorizontal = 40;
@@ -326,7 +327,7 @@ class Menu {
             return Math.max(widthFromVw, minMenuWidthPx + paddingHorizontal);
         }
 
-        /** Unified menu toggle function */
+        /** Function for switching the menu and controlling the width of the Load Distribution section */
         function toggleMenuState(shouldExpand) {
             if (shouldExpand) {
                 const totalWidth = getExpandedWidthPx();
@@ -336,6 +337,9 @@ class Menu {
                 logo.classList.remove('hidden');
                 logoMini.classList.add('hidden');
                 searchDropdownContainer.classList.remove('hidden');
+                table.forEach(table => {
+                    table.style.width = `${window.innerWidth - totalWidth - 33}px`; /** for the open menu */
+                });
             } else {
                 menu.style.width = collapsedWidthPx + 'px';
                 mainContainer.style.left = (collapsedWidthPx + paddingHorizontal) + 'px';
@@ -343,6 +347,9 @@ class Menu {
                 logo.classList.add('hidden');
                 logoMini.classList.remove('hidden');
                 searchDropdownContainer.classList.add('hidden');
+                table.forEach(table => {
+                    table.style.width = `${window.innerWidth - (collapsedWidthPx + paddingHorizontal) - 33}px`; /** for a closed menu */
+                });
             }
         }
 
