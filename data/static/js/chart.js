@@ -24,38 +24,53 @@ class PipeChart extends BaseChart {
         let MIN_TEXT_WIDTH = 15; /** Minimum width for displaying text */
 
         let nestedSvg = '';
+        let totalWidth = 0; /** the length of the entire line */
+
+        orderedData.forEach(elem => {
+            let width = Math.floor(elem[value]);
+            if (width > 0) {
+                totalWidth += width;
+            }
+        });
 
         orderedData.forEach(elem => {
             let width = (Math.floor(elem[value]) - 0.2);
-            let textContent = `${elem.objname}: ${elem[key]}`;
-
-            let lineColor;
-            if (elem[value] > 50) {
-                lineColor = "FF4C38"; /** >50% */
-            } else if (elem[value] > 25) {
-                lineColor = "FF9500"; /** >25% and <=50% */
-            } else if (elem[value] > 10) {
-                lineColor = "00B896"; /** >10% and <=25% */
-            } else {
-                lineColor = "8898AE"; /** <=10% */
+            /** all lines with a value of 'width' > 0 */
+            if (width > 0) {
+                let textContent = `${elem.objname}: ${elem[key]}`;
+                let lineColor;
+                if (elem[value] > 50) lineColor = "FF4C38";       // >50% 
+                else if (elem[value] > 25) lineColor = "FF9500";   // >25% <=50%
+                else if (elem[value] > 10) lineColor = "FFC83B";    // >10% <=25%
+                else lineColor = "00B896";                          // <=10%
+                
+                /** Check if there is enough space for the text */
+                let shouldShowText = width >= MIN_TEXT_WIDTH;
+                
+                nestedSvg += `
+                    <svg height="2em" width="${width}%" x="${x}%">
+                        <title>${elem.objname}: ${elem[value]}%</title>
+                        <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#${lineColor}" stroke-width="5px"></line>
+                        ${shouldShowText ? 
+                            `<text x="0.1em" y="45%" dominant-baseline="middle" fill="#${lineColor}">${textContent}</text>` 
+                            : ''}
+                    </svg>
+                `;
+                
+                x += width + 0.2; /** indented */
             }
-            
-            /** Check if there is enough space for the text */
-            let shouldShowText = width >= MIN_TEXT_WIDTH;
-            
+        });
+        
+        /** If there is still space after drawing all the lines, add an additional line */
+        if (totalWidth < 100) {
+            let remainingWidth = 100 - totalWidth;
             nestedSvg += `
-                <svg height="2em" width="${width}%" x="${x}%">
-                    <title>${elem.objname}: ${elem[value]}</title>
-                    <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#${lineColor}" stroke-width="5px"></line>
-                    ${shouldShowText ? 
-                        `<text x="0.1em" y="45%" dominant-baseline="middle" fill="#${lineColor}">${textContent}</text>` 
-                        : ''}
+                <svg height="2em" width="${remainingWidth}%" x="${x}%">
+                    <title>Others (${remainingWidth}%)</title>
+                    <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#8898AE" stroke-width="5px"></line>
                 </svg>
             `;
-            
-            x += width + 0.2; /** indented */
-            
-        })
+        }        
 
         let svg = `
             <svg
