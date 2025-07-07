@@ -241,17 +241,22 @@ class BaseTable extends BaseSection {
         /** Tag with md5 of (userid::text || datid::text || queryid::text) */
         let p2 = document.createElement('p');
         let small = document.createElement('small');
-        p2.appendChild(small);
         small.innerHTML = `[${row.hashed_ids}]`;
+
+        let divSmall = document.createElement('div');
+        divSmall.classList.add('divSmall');
+        divSmall.appendChild(small);
 
         /** If toplevel is false then add special tag*/
         if (!row.toplevel) {
-            small = document.createElement('small');
-            p2.appendChild(small);
-            small.innerHTML = '(N)';
-            small.title = 'Nested level';
+            let nestedSmall = document.createElement('small');
+            nestedSmall.innerHTML = '(N)';
+            nestedSmall.title = 'Nested level';
+            divSmall.appendChild(nestedSmall);
         }
+
         newCell.appendChild(p1);
+        p2.appendChild(divSmall);
         newCell.appendChild(p2);
 
         /** Copy query id into clipboard button */

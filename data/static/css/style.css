@@ -47,8 +47,11 @@ td p {
 
 td p:nth-of-type(2) {
     display: flex;
-    justify-content: center;
     align-items: center;
+}
+
+.divSmall {
+    margin:  0 auto;
 }
 
 p i {
