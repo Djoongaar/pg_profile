@@ -21,7 +21,7 @@ class BaseChart {
 class PipeChart extends BaseChart {
     static drawSVG(orderedData, value, key) {
         let x = 0; /** Start position of nested svg */
-        let MIN_TEXT_WIDTH = 15; /** Minimum width for displaying text */
+        let minTextWidth = 15; /** Minimum width for displaying text */
 
         let nestedSvg = '';
         let totalWidth = 0; /** the length of the entire line */
@@ -34,26 +34,29 @@ class PipeChart extends BaseChart {
         });
 
         orderedData.forEach(elem => {
-            let width = (Math.floor(elem[value]) - 0.2);
+            let width = Math.floor(elem[value]);
             /** all lines with a value of 'width' > 0 */
             if (width > 0) {
                 let textContent = `${elem.objname}: ${elem[key]}`;
                 let lineColor;
-                if (elem[value] > 50) lineColor = "FF4C38";       // >50% 
+                if (elem[value] > 50) lineColor = "FA1900";       // >50% 
                 else if (elem[value] > 25) lineColor = "FF9500";   // >25% <=50%
                 else if (elem[value] > 10) lineColor = "FFC83B";    // >10% <=25%
                 else lineColor = "00B896";                          // <=10%
                 
                 /** Check if there is enough space for the text */
-                let shouldShowText = width >= MIN_TEXT_WIDTH;
+                let shouldShowText = width >= minTextWidth;
+
+                /** If there is only one parameter, it takes up the entire width without any padding */
+                if (width !== 100) {
+                    width = width - 0.2;
+                }
                 
                 nestedSvg += `
                     <svg height="2em" width="${width}%" x="${x}%">
                         <title>${elem.objname}: ${elem[value]}%</title>
                         <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#${lineColor}" stroke-width="5px"></line>
-                        ${shouldShowText ? 
-                            `<text x="0.1em" y="45%" dominant-baseline="middle" fill="#${lineColor}">${textContent}</text>` 
-                            : ''}
+                        ${shouldShowText ? `<text x="0.1em" y="45%" dominant-baseline="middle" fill="#${lineColor}">${textContent}</text>`: ''}
                     </svg>
                 `;
                 
