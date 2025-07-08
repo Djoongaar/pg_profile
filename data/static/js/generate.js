@@ -14,7 +14,7 @@ class BaseSection {
      */
     static buildTitle(section, deep) {
         let title = document.createElement('h3');
-        if (deep != 1) {
+        if (deep !== 1) {
             title = document.createElement('p');
         }
         
@@ -850,7 +850,7 @@ class VerticalTable extends BaseTable {
             
             for (let j = 0; j < columns[i].cells.length; j++) {
                 let cell = columns[i].cells[j];
-                let klass = classes[j+1].class;
+                let klass = classes[j].class;
                 VerticalTable.buildCell(newRow, cell, rows, klass);
             }
         }
