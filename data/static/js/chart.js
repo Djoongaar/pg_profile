@@ -20,11 +20,9 @@ class BaseChart {
 
 class PipeChart extends BaseChart {
     static drawSVG(orderedData, value, key) {
-        let x = 0; /** Start position of nested svg */
-        let minTextWidth = 15; /** Minimum width for displaying text */
-
+        let x = 0;
         let nestedSvg = '';
-        let totalWidth = 0; /** the length of the entire line */
+        let totalWidth = 0;
 
         orderedData.forEach(elem => {
             let width = Math.floor(elem[value]);
@@ -39,56 +37,90 @@ class PipeChart extends BaseChart {
             if (width > 0) {
                 let textContent = `${elem.objname}: ${elem[key]}`;
                 let lineColor;
-                if (elem[value] > 50) lineColor = "FA1900";       // >50% 
-                else if (elem[value] > 25) lineColor = "FF9500";   // >25% <=50%
-                else if (elem[value] > 10) lineColor = "FFC83B";    // >10% <=25%
-                else lineColor = "00B896";                          // <=10%
-                
-                /** Check if there is enough space for the text */
-                let shouldShowText = width >= minTextWidth;
+                if (elem[value] > 50) {         // >50% 
+                    lineColor = "FA1900";
+                } else if (elem[value] > 25) {  // >25% <=50%
+                    lineColor = "FF9500";
+                } else if (elem[value] > 10) {  // >10% <=25%
+                    lineColor = "FFC83B";
+                } else {                        // <=10%
+                    lineColor = "00B896";                         
+                }
 
                 /** If there is only one parameter, it takes up the entire width without any padding */
                 if (width !== 100) {
-                    width = width - 0.2;
+                    width = width - 0.3;
                 }
-                
+
                 nestedSvg += `
-                    <svg height="2em" width="${width}%" x="${x}%">
+                    <svg class="lineSvg" height="2em" width="${width}%" x="${x}%">
                         <title>${elem.objname}: ${elem[value]}%</title>
-                        <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#${lineColor}" stroke-width="5px"></line>
-                        ${shouldShowText ? `<text x="0.1em" y="45%" dominant-baseline="middle" fill="#${lineColor}">${textContent}</text>`: ''}
+                        <line opacity="0.4" x1="0" y1="80%" x2="100%" y2="80%" stroke="#${lineColor}" stroke-width="4px"></line>
+                        <text x="0.1em" y="45%" dominant-baseline="middle" fill="#${lineColor}" class="textSvg">
+                            ${textContent}
+                        </text>
                     </svg>
                 `;
-                
-                x += width + 0.2; /** indented */
+
+                x += width + 0.3;
             }
         });
-        
-        /** If there is still space after drawing all the lines, add an additional line */
+
         if (totalWidth < 100) {
             let remainingWidth = 100 - totalWidth;
             nestedSvg += `
-                <svg height="2em" width="${remainingWidth}%" x="${x}%">
+                <svg class="lineSvg" height="2em" width="${remainingWidth}%" x="${x}%">
                     <title>Others (${remainingWidth}%)</title>
-                    <line x1="0" y1="80%" x2="100%" y2="80%" stroke="#8898AE" stroke-width="5px"></line>
+                    <line opacity="0.4" x1="0" y1="80%" x2="100%" y2="80%" stroke="#8898AE" stroke-width="4px"></line>
                 </svg>
             `;
-        }        
+        }
 
-        let svg = `
-            <svg
-                height="2em"
-                width="100%">
-                ${nestedSvg}
-            </svg>
-        `;
-
-        return svg;
+        return `<svg height="2em" width="100%" class="pipe-chart-container">${nestedSvg}</svg>`;
     }
 
     static drawIntoTable(newRow, column, data) {
         BaseChart.drawIntoTable(PipeChart, newRow, column, data);
+        setTimeout(() => {
+            /** We are looking for all fields of the chart */
+            let containerSvg = newRow.querySelectorAll('.pipe-chart-container');
+            
+            containerSvg.forEach(containerSvg => {
+                if (containerSvg) {
+                    PipeChart.checkTextOverflow(containerSvg); /** first check */
+                    /** tracking window size changes */
+                    let resizeObserver = new ResizeObserver((entries) => {
+                        entries.forEach(entry => {
+                            PipeChart.checkTextOverflow(entry.target);
+                        });
+                    });
+                    resizeObserver.observe(containerSvg);
+                    // Сохраняем observer для последующей очистки
+                    containerSvg._resizeObserver = resizeObserver;
+                }
+            });
+        }, 100); /** delay for reliability */
+
         return true;
+    }
+
+    /** A function for comparing the width of text and line */
+    static checkTextOverflow(container) {
+        let lineSvgs = container.querySelectorAll('.lineSvg');
+        if (lineSvgs) {
+            lineSvgs.forEach(svg => {
+                let textElement = svg.querySelector('.textSvg');
+                let lineElement = svg.querySelector('line');
+
+                if (textElement || lineElement || textElement.getBBox || lineElement.getBBox) {
+                    /** getting the dimensions */
+                    let textBBox = textElement.getBBox();
+                    let lineBBox = lineElement.getBBox();
+
+                    textElement.style.visibility = textBBox?.width > lineBBox?.width ? 'hidden' : 'visible';
+                }
+            });
+        }
     }
 }
 

@@ -50,8 +50,8 @@ td p:nth-of-type(2) {
     align-items: center;
 }
 
-.divSmall {
-    margin:  0 auto;
+.small_p {
+    justify-content: center;
 }
 
 p i {
@@ -311,10 +311,18 @@ table tr td.table_obj_name {
     text-align: left;
 }
 
-table tr td.fullScreen {
+table tr td.fullScreen, td.halfScreen {
     width: 85%;
     font-family: var(--main-font-family);
     font-size: clamp(8px, 0.9vw, 12px);
+}
+
+.lineSvg:hover {
+    cursor: pointer;
+}
+
+.lineSvg line:hover {
+    opacity: 1;
 }
 
 table tr td.halfScreen {
