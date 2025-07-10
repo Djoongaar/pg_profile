@@ -350,7 +350,7 @@ class SessionChart extends BaseChart {
                 'queryid': elem.queryid
             };
             if (stateChanging[`${elem.pid}_${elem.backend_start_ut}`] === undefined) {
-                // Backend statistics
+                /** Backend statistics */
                 let xact = {}
                 xact[elem.xact_start_ut] = {
                     'pid': elem.pid,
@@ -422,14 +422,14 @@ class SessionChart extends BaseChart {
         Object.keys(stateChanging).forEach(backend => {
             let colour;
             let backendObj = stateChanging[backend];
-            // Drawing rectangle with backend
+            /** Drawing rectangle with backend */
             let title = '';
             title += `PID: ${backendObj.pid}\n`;
             title += `Backend start: ${new Date(backendObj.start_ut * 1000)}\n`;
             title += `Backend duration: ${Math.round(backendObj.duration * 100) / 100} sec`;
 
             let backendSVG = this.drawRect(backendObj, reportStartUT, proportion, backendObj['chart_line'], this.colours[2], this.colours[17], title, 'backend');
-            // Drawing PID
+            /** Drawing PID */
             let pidSVG = this.drawPID(backendObj, reportStartUT, proportion, backendObj['chart_line']);
 
             StateChangeSVGNested += backendSVG;
@@ -451,10 +451,10 @@ class SessionChart extends BaseChart {
                 Object.keys(xactObj.state_changes).forEach(state_change => {
                     let stateChangeObj = xactObj.state_changes[state_change];
                     if (stateChangeObj.state_code === 1) {
-                        // idle in transaction
+                        /** idle in transaction */
                         colour = this.colours[6]
                     } else if (stateChangeObj.state_code === 3) {
-                        // active
+                        /** active */
                         colour = this.colours[9]
                     }
                     let title = '';
@@ -468,7 +468,7 @@ class SessionChart extends BaseChart {
                     title += `Backend start: ${new Date(backendObj.start_ut * 1000)} \n`;
                     title += `Backend duration: ${Math.round(backendObj.duration * 100) / 100} sec`;
 
-                    // dataObj, reportStartUT, proportion, num, strokeColour, fillColour, title, klass
+                    /** dataObj, reportStartUT, proportion, num, strokeColour, fillColour, title, klass */
                     let stateChangeSVG = this.drawRect(
                         stateChangeObj,
                         reportStartUT,
@@ -486,8 +486,7 @@ class SessionChart extends BaseChart {
             })
         })
 
-        // Drawing timeline grid
-
+        /** Drawing timeline grid */
         let timeGridNestedSVG = '';
 
         for (let i = 0; i <= linesCount; i++) {
@@ -547,7 +546,7 @@ class SessionChart extends BaseChart {
     }
 
     drawSessionChartLegend() {
-        // Create legend
+        /** Create legend */
         let legend = document.createElement('div');
         legend.style.display = 'flex';
         legend.style.flexDirection = 'column';
