@@ -423,7 +423,7 @@ table tr.previewRow {
     background-color: white;
 }
 
-table tr.grey {
+table:not(.pgprototals) tr.grey {
     background-color: #eee;
 }
 table tr.previewRow {

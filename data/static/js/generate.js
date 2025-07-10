@@ -834,13 +834,10 @@ class VerticalTable extends BaseTable {
         for (let i = 0; i < columns.length; i++) {
             let newRow = this.table.insertRow(-1);
             
-            /** We do not apply it to charts */
-            if (!this.table.classList.contains('pgprototals')) {
-                /** Set class to row */
-                if (i % 2 !== 0) {
-                    newRow.classList.add('grey');
-                }
-            }    
+            /** Set class to row */
+            if (i % 2 !== 0) {
+                newRow.classList.add('grey');
+            }
 
             VerticalTable.buildCell(newRow, columns[i], rows, classes[0].class);
             
