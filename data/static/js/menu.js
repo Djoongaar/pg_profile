@@ -257,7 +257,8 @@ class Menu {
 
                 if (sectId) {
                     /** We are looking for a link corresponding to the current ID. */
-                    let targetLink = document.querySelector(`.chapter a[href="#${sectId}"]`);
+                    let cleanSectId = sectId.replace(/_s$/, ''); /** Removes "_s" at the end of the string */
+                    let targetLink = document.querySelector(`.chapter a[href="#${cleanSectId}"]`);
                     let currentChapter = targetLink?.closest('.chapter');
 
                     if (targetLink && currentChapter) {

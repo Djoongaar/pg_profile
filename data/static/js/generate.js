@@ -19,7 +19,7 @@ class BaseSection {
         }
         
         title.innerHTML = section.tbl_cap;
-        title.id = section.sect_id;
+        title.id = `${section.sect_id}_s`;
         return title;
     }
 
