@@ -95,7 +95,7 @@ class PipeChart extends BaseChart {
                         });
                     });
                     resizeObserver.observe(containerSvg);
-                    // Сохраняем observer для последующей очистки
+                    /** Saving the observer */
                     containerSvg._resizeObserver = resizeObserver;
                 }
             });
@@ -105,14 +105,14 @@ class PipeChart extends BaseChart {
     }
 
     /** A function for comparing the width of text and line */
-    static checkTextOverflow(container) {
-        let lineSvgs = container.querySelectorAll('.lineSvg');
+    static checkTextOverflow(containerSvg) {
+        let lineSvgs = containerSvg.querySelectorAll('.lineSvg');
         if (lineSvgs) {
             lineSvgs.forEach(svg => {
                 let textElement = svg.querySelector('.textSvg');
                 let lineElement = svg.querySelector('line');
 
-                if (textElement || lineElement || textElement.getBBox || lineElement.getBBox) {
+                if (textElement && lineElement && textElement.getBBox && lineElement.getBBox) {
                     /** getting the dimensions */
                     let textBBox = textElement.getBBox();
                     let lineBBox = lineElement.getBBox();
