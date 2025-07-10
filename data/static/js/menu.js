@@ -329,6 +329,7 @@ class Menu {
 
         /** Function for switching the menu and controlling the width of the Load Distribution section */
         function toggleMenuState(shouldExpand) {
+            let tableMarginRight = window.innerWidth * 0.03;
             if (shouldExpand) {
                 const totalWidth = getExpandedWidthPx();
                 menu.style.width = (totalWidth - paddingHorizontal) + 'px';
@@ -338,7 +339,7 @@ class Menu {
                 logoMini.classList.add('hidden');
                 searchDropdownContainer.classList.remove('hidden');
                 table.forEach(table => {
-                    table.style.width = `${window.innerWidth - totalWidth - 33}px`; /** for the open menu */
+                    table.style.width = `${window.innerWidth - totalWidth - tableMarginRight}px`; /** for the open menu */
                 });
             } else {
                 menu.style.width = collapsedWidthPx + 'px';
@@ -348,7 +349,7 @@ class Menu {
                 logoMini.classList.remove('hidden');
                 searchDropdownContainer.classList.add('hidden');
                 table.forEach(table => {
-                    table.style.width = `${window.innerWidth - (collapsedWidthPx + paddingHorizontal) - 33}px`; /** for a closed menu */
+                    table.style.width = `${window.innerWidth - (collapsedWidthPx + paddingHorizontal) - tableMarginRight}px`; /** for a closed menu */
                 });
             }
         }
