@@ -14,12 +14,12 @@ class BaseSection {
      */
     static buildTitle(section, deep) {
         let title = document.createElement('h3');
-        if (deep != 1) {
+        if (deep !== 1) {
             title = document.createElement('p');
         }
         
         title.innerHTML = section.tbl_cap;
-        title.id = section.sect_id;
+        title.id = `${section.sect_id}_s`;
         return title;
     }
 
@@ -240,6 +240,7 @@ class BaseTable extends BaseSection {
 
         /** Tag with md5 of (userid::text || datid::text || queryid::text) */
         let p2 = document.createElement('p');
+        p2.classList.add('small_p');
         let small = document.createElement('small');
         p2.appendChild(small);
         small.innerHTML = `[${row.hashed_ids}]`;
@@ -832,7 +833,7 @@ class VerticalTable extends BaseTable {
 
         for (let i = 0; i < columns.length; i++) {
             let newRow = this.table.insertRow(-1);
-
+            
             /** Set class to row */
             if (i % 2 !== 0) {
                 newRow.classList.add('grey');
@@ -842,7 +843,7 @@ class VerticalTable extends BaseTable {
             
             for (let j = 0; j < columns[i].cells.length; j++) {
                 let cell = columns[i].cells[j];
-                let klass = classes[j+1].class;
+                let klass = classes[j].class;
                 VerticalTable.buildCell(newRow, cell, rows, klass);
             }
         }
