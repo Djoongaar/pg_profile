@@ -353,10 +353,21 @@ class Menu {
                     table.style.width = `${window.innerWidth - (collapsedWidthPx + paddingHorizontal) - tableMarginRight}px`; /** for a closed menu */
                 });
             }
+
+            /** saves the menu status while the browser is open */
+            if (shouldExpand) {
+                sessionStorage.setItem('menuState', 'expanded');
+            } else {
+                sessionStorage.setItem('menuState', 'folded');
+            }
         }
+        
+        let savedMenuState = sessionStorage.getItem('menuState');
+        /** by default menu is open */
+        let menuExpanded = savedMenuState !== 'folded';
 
         /** Set initial state */
-        toggleMenuState(!menu.classList.contains('hidden'));
+        toggleMenuState(menuExpanded);
 
         /** Logo Click Handlers */
         [logo, logoMini].forEach(elem =>
