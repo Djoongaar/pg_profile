@@ -355,19 +355,13 @@ class Menu {
             }
 
             /** saves the menu status while the browser is open */
-            if (shouldExpand) {
-                sessionStorage.setItem('menuState', 'expanded');
-            } else {
-                sessionStorage.setItem('menuState', 'folded');
-            }
+            localStorage.setItem('menuVisible', shouldExpand);
         }
         
-        let savedMenuState = sessionStorage.getItem('menuState');
-        /** by default menu is open */
-        let menuExpanded = savedMenuState !== 'folded';
+        let savedMenuState = localStorage.getItem('menuVisible');
 
         /** Set initial state */
-        toggleMenuState(menuExpanded);
+        toggleMenuState(savedMenuState === 'true' || savedMenuState === null);
 
         /** Logo Click Handlers */
         [logo, logoMini].forEach(elem =>
