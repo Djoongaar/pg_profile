@@ -353,10 +353,21 @@ class Menu {
                     table.style.width = `${window.innerWidth - (collapsedWidthPx + paddingHorizontal) - tableMarginRight}px`; /** for a closed menu */
                 });
             }
+
+            /** saves the menu status while the browser is open */
+            localStorage.setItem('menuVisible', shouldExpand);
         }
+        
+        let savedMenuState = localStorage.getItem('menuVisible');
+
+        if (!savedMenuState) {
+            savedMenuState = 'true';
+        }
+        /** we explicitly convert a string from localStorage to a boolean type */
+        let menuExpanded = (savedMenuState === 'true');
 
         /** Set initial state */
-        toggleMenuState(!menu.classList.contains('hidden'));
+        toggleMenuState(menuExpanded);
 
         /** Logo Click Handlers */
         [logo, logoMini].forEach(elem =>
