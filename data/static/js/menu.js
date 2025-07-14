@@ -360,8 +360,14 @@ class Menu {
         
         let savedMenuState = localStorage.getItem('menuVisible');
 
+        if (!savedMenuState) {
+            savedMenuState = 'true';
+        }
+        /** we explicitly convert a string from localStorage to a boolean type */
+        let menuExpanded = (savedMenuState === 'true');
+
         /** Set initial state */
-        toggleMenuState(savedMenuState === 'true' || savedMenuState === null);
+        toggleMenuState(menuExpanded);
 
         /** Logo Click Handlers */
         [logo, logoMini].forEach(elem =>
